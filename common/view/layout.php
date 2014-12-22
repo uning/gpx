@@ -8,6 +8,12 @@
 
         <script src="<?php echo $curlp;?>/jqGrid/js/jquery-1.11.0.min.js"></script>
 
+
+         <script src="<?php echo $curlp;?>/jui/1112/jquery-ui.js"></script>
+        
+        <script src="<?php echo $curlp;?>/multiselect/js/jquery.uix.multiselect.js"></script>
+        <link rel="stylesheet" href="<?php echo $curlp;?>/multiselect/css/jquery.uix.multiselect.css">
+
         <script src="<?php echo $curlp?>/jqGrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
         <script src="<?php echo $curlp?>/jqGrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
         <link rel="stylesheet" type="text/css" media="screen" href="<?php echo $curlp?>/css/ui.jqgrid.css" />
@@ -43,7 +49,6 @@
         </div> <!-- container -->
 
     </body>
-    <script src="<?php echo $curlp;?>/jui/1112/jquery-ui.js"></script>
 </html>
 <?php if($this->tailerView) include $this->tailerView; ?>
 <script>

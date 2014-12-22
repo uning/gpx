@@ -7,6 +7,13 @@ return  array(
         ,'aheader'=>array(
             'comment'=>'原因记录'
         )
+        ,'groups'=>array(
+            0 => '交割日期',
+            2 => '证券代码',
+            3 => '证券名称',
+            17 => '股东代码',
+            18 => '资金帐号',
+        )
         ,'header'=> array(
             0 => '交割日期',
             1 => '业务名称',
@@ -33,6 +40,9 @@ return  array(
         'name'=>'历史成交'
         ,'filename'=>'cjjl.csv' //文件名
         ,'idfs'=>array(0,1,2,5,6,7,8,9,12,15) // 哪些字段参与id计算 note!!! 修改后所有的需要重新计算
+        ,'groups'=>array(
+            2 => '证券代码',
+        )
         ,'header'=>array (
             0 => '成交日期',
             1 => '成交时间',
@@ -60,6 +70,9 @@ return  array(
         'name'=>'资金流水'
         ,'filename'=>'zjls.csv' //文件名
         ,'idfs'=>array(0,2,3,5,6,9,10,11)//数据库中头的id
+        ,'groups'=>array(
+            9 => '证券代码',
+        )
         ,'header'=>array (
             0 => '成交日期',
             1 => '业务名称',

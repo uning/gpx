@@ -23,6 +23,7 @@ var  DC = DC || {
             name: "_id",
             index: "_id",
             hidden: true,
+            frozen:true,
             key: true
         },
         {
@@ -31,6 +32,7 @@ var  DC = DC || {
             label: "交割日期",
             width: 75,
             stype: "text",
+            frozen:true,
             searchoptions: {
                 dataInit: 'datePick',
                 attr: {
@@ -50,6 +52,7 @@ var  DC = DC || {
             label: "业务名称",
             stype: "text",
             width: 75,
+            frozen:true,
             sorttype: "text"
         },
         {
@@ -58,6 +61,7 @@ var  DC = DC || {
             label: "证券代码",
             width: 75,
             stype: "text",
+            frozen:true,
             searchoptions: {
                 sopt: [
                     'eq',
@@ -80,12 +84,14 @@ var  DC = DC || {
                     'le'
                 ]
             },
+            frozen:true,
             sorttype: "text"
         },
         {
             name: "4",
             index: "4",
             label: "成交价格",
+            frozen:true,
             width: 75,
             sorttype: "number"
         },
@@ -108,13 +114,18 @@ var  DC = DC || {
             index: "7",
             label: "成交金额",
             width: 75,
+            summaryTpl: "{0}", // set the summary template to show the group summary
+            summaryType: "sum", // set the formula to calculate the summary typ
             sorttype: "number"
+
         },
         {
             name: "8",
             index: "8",
             label: "清算金额",
             width: 75,
+            summaryTpl: "{0}", // set the summary template to show the group summary
+            summaryType: "sum", // set the formula to calculate the summary typ
             sorttype: "number"
         },
         {
@@ -129,6 +140,8 @@ var  DC = DC || {
             index: "10",
             label: "佣金",
             width: 50,
+            summaryTpl: "{0}", // set the summary template to show the group summary
+            summaryType: "sum", // set the formula to calculate the summary typ
             sorttype: "number"
         },
         {
@@ -136,6 +149,8 @@ var  DC = DC || {
             index: "11",
             label: "印花税",
             width: 50,
+            summaryTpl: "{0}", 
+            summaryType: "sum",
             sorttype: "number"
         },
         {
@@ -194,8 +209,8 @@ var  DC = DC || {
         }
         ]
     },
-    cjjl: {
-        name: "成交记录",
+    lscj:{
+        name: "历史成交",
         colModel: [
             {
             name: "_id",

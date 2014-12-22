@@ -1,60 +1,70 @@
 <?php
 include __DIR__.'/../base.php';
 $dataconf  = include './dataconf.php';
-$coll = $argv[1];
-$collconf = $dataconf[$coll];
-if((!$coll || !$collconf ) && 'all' != $coll){
-    echo <<<USAGE
-    导入文件数据到数据库，必须utf8编码的csv文件,导入会根据表字段去重
-    php {$argv[0]}  all|collname
-    
-       all   -- 表全部导入
-       cjjl  -- 成交记录表导入
 
-USAGE;
-    die();
-}
-if('all' == $coll ){
-    $colls = array_keys($dataconf);
-}else{
-$colls = array($coll);
-}
+$files = glob(__DIR__."/raw/newq/*.csv");
 
-$i = 0;
-foreach($colls as $coll){
+
+
+foreach($files as $afn){
+    echo "$afn  \n";
+    $fn = basename($afn,'.txt');
+    $finfo = explode('_',$fn);
+    $coll = $finfo[0];
+
     $collconf  = &$dataconf[$coll];
-    $mc = DbConfig::getMongodb($coll);
-    $dfilename = __DIR__."/raw/$coll.csv";
-    if(!file_exists($dfilename)){
-        echo "import $coll -- {$collconf['name']} failed!!!! -- ";
-        echo "file $dfilename not exists\n";
+    if(!$finfo[1] || !$collconf){
+        echo "$fn ignore [name not get coll] \n";
         continue;
     }
-    $fd =  fopen($dfilename,"r");
+
+    $mc = DbConfig::getMongodb($coll);
+    $fd =  fopen($afn,"r");
     if(!$fd){
         echo "import $coll -- {$collconf['name']} failed!!!! -- ";
-        echo "file $dfilename not open\n";
+        echo "file $afn not open\n";
         continue;
     }
 
 
     $idfs = $collconf['idfs'];
+    $header = $collconf['header'];
+    $colcnt = count($header);
+    $headerfind = false;
     while( $row = fgetcsv($fd)){
         $vstr = '';
         foreach( $idfs as $v){
             $vstr .=$row[$v];
         }
-        $id = $row['_id'] = md5($vstr);
-        //if($mc->findOne(array('_id'=>$id))
-        $mc->findAndModify(array('_id'=>$id),array('$set'=>$row),array(),array('upsert'=>true));
-
-        if($i%100 == 1){
-            echo "import $i records \n";
+        if(!$headerfind){
+            $headerinvalid = 0;
+            ///允许一个不同，因为该死的头部两字节不好去除
+            foreach($header as $k=>$v){
+                if($v != $row[$k]){
+                    echo "$fn header checknot  $k=>$v {$row[$k]} \n";
+                    $headerinvalid +=1;
+                    if($headerinvalid > 1)
+                        break;
+                }
+            }
+            if($headerinvalid > 1){
+               echo "$fn header notmatch  \n";
+                var_export($row);
+                break;
+            }
+            $headerfind = true;
+            echo "$fn match\n";
+        }else{
+            $id = $row['_id'] = md5($vstr);
+            $mc->findAndModify(array('_id'=>$id),array('$set'=>$row),array(),array('upsert'=>true));
+            if($i%100 == 1){
+                echo "$fn import $i records \n";
+            }
+            $i += 1;
         }
-        $i += 1;
     }
     fclose($fd);
-    echo "import $coll -- {$collconf['name']} ok\n";
+    echo "$fn import $coll -- {$collconf['name']} ok\n";
 }
 
 

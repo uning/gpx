@@ -30,16 +30,35 @@ jQuery(document).ready(function(){
 
         url:'?action=q&__nl=1&coll='+COLL,
         jsonReader:{repeatitems:false},
-        rowNum: 20,
-        rowList: [20,80,500],
+        rowNum: 50,
+        rowList: [50,80,50000],
         height: '10%',
         caption: '<?php echo $dconf["name"]?>',
         pager: pager_id_jq,
+        shrinkToFit: false,
+        //loadonce: true,
+        scroll:true,
+        width: 1200,
+        //height: 300,
         datatype: 'json',
         multiSort: true,
         viewrecords: true,
         sortorder: 'desc',
         sortname: '0',
+        //动态添加
+        altRows: true,
+
+        grouping: true,
+        groupingView: {
+            groupField: ["<?php echo $group?>"],
+            groupColumnShow: [true],
+            groupText: ["<b>{0}</b>"],
+            showSummaryOnHide:true,
+            groupSummaryPos: ['header'],
+            groupOrder: ["asc"],
+            groupSummary: [true],
+            groupCollapse: false
+        },
 
         userDataOnFooter: true,// use the userData parameter of the JSON response to display data on footer
 
@@ -80,7 +99,7 @@ jQuery(document).ready(function(){
     };
 
     var grido = jQuery(grid_id_jq)
-    grido.jqGrid(jqconf);
+    grido.jqGrid(jqconf)
 
 
     //toolbar
@@ -91,7 +110,9 @@ jQuery(document).ready(function(){
                      add:false,
                      del:false,
                      view:true,
+                     position: "left", 
                      cloneToTop:true
+
                  },
                  // options for the Edit Dialog
                  {},
@@ -116,5 +137,35 @@ jQuery(document).ready(function(){
                      // set the template contents
                      // "tmplFilters": [template1, template2]
                  }
-                );
+        );
+
+    //this not work with subGrid
+    grido.jqGrid("setFrozenColumns");
+    // add first custom button
+    grido.navButtonAdd(pager_id_jq,
+                       {
+                           buttonicon: "ui-icon-calculator",
+                           title: "选择显示列",
+                           caption: "列选择",
+                           position: "last",
+                           onClickButton: function() {
+                               // call the column chooser method
+                               grido.jqGrid('columnChooser');
+                           }
+                       });
+    // on chang select value change grouping
+    $("#chngroup_<?php echo $coll?>").change(function(){
+        var vl = $(this).val();
+        if(vl) {
+            if(vl === "clear") {
+                grido.jqGrid('groupingRemove',true);
+            } else {
+                grido.jqGrid('groupingGroupBy',vl);
+            }
+        }
+    }); 	
+
 });
+
+
+
