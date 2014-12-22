@@ -1,0 +1,12 @@
+
+asset/*
+plframework/*
+tools/*
+data/*
+show/*
+t.*
+views/*
+log/*
+crawler/cache/*
+tags
+*.bak

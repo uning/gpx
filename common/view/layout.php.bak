@@ -1,0 +1,140 @@
+<!doctype html >
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>操作记录</title>
+		<?php if($this->headerView) require $this->headerView; ?>
+		<link rel="stylesheet" href="<?php echo $curlp = P_URLP;?>/jui/themes/base/jquery.ui.all.css">
+		<script src="<?php echo $curlp;?>/jui/jquery-1.7.1.js"></script>
+		<script src="<?php echo $curlp;?>/jui/external/jquery.bgiframe-2.1.2.js"></script>
+
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.core.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.widget.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.dialog.js"></script>
+
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.mouse.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.button.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.draggable.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.position.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.resizable.js"></script>
+
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.effects.core.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.mouse.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.sortable.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.selectable.js"></script>
+
+
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.selectable.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.tabs.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.menu.js"></script>
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.autocomplete.js"></script>
+
+		<!-- 
+		<script src="<?php echo $curlp;?>/jui/ui/jquery.ui.popup.js"></script>
+		-->
+
+		<script src="<?php echo $curlp;?>/bootstrap/js/bootstrap.js"></script>
+		<link rel="stylesheet" href="<?php echo $curlp;?>/bootstrap/css/bootstrap.css">
+		<link rel="stylesheet" href="<?php echo $curlp;?>/bootstrap/css/bootstrap-responsive.css">
+
+		<!-- 
+		<link rel="stylesheet" href="<?php echo $curlp;?>/jsoneditor/jquery.json-editor.css">
+		-->
+		<script src="<?php echo $curlp;?>/js/json2.min.js"></script>
+		<script src="<?php echo $curlp;?>/jsoneditor/jquery.json-editor.js"></script>
+
+
+		<link rel="stylesheet" href="<?php echo $curlp;?>/select/select2.css?1">
+		<script src="<?php echo $curlp;?>/select/select2.min.js?1"></script>
+
+
+		<script type="text/javascript" language="javascript" src="<?php echo $curlp?>/jqtable/media/js/jquery.dataTables.js"></script>
+		<script type="text/javascript" charset="utf-8" src="<?php echo $curlp?>/jqtable/js/ZeroClipboard.js"></script>
+		<script type="text/javascript" charset="utf-8" src="<?php echo $curlp?>/jqtable/js/TableTools.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="<?php echo $curlp?>/jqtable/flotr2.min.js"></script>
+		<link rel="stylesheet" href="<?php echo $curlp?>/jqtable/css/TableTools_JUI.css"/>
+		<link rel="stylesheet" href="<?php echo $curlp?>/jqtable/css/TableTools.css"/>
+		<style type="text/css" title="currentStyle">
+			@import "<?php echo $curlp?>/jqtable/media/css/demo_page.css";
+			@import "<?php echo $curlp?>/jqtable/media/css/demo_table.css";
+			.clear{
+				clear:both;
+			}
+
+
+			ul{
+				list-style:none;
+				padding:0 0;
+			}
+			.fl {
+				float:left;
+				padding-left:8px;
+				padding-right:8px;
+				border-right: 1px soundexlid #222222; 
+			}
+			.hidden{visibility:hidden;}
+		</style>
+		<script>
+			JSONEditor.prototype.ADD_IMG = '<?php echo $curlp;?>/jsoneditor/add.png';
+			JSONEditor.prototype.DELETE_IMG = '<?php echo $curlp;?>/jsoneditor/delete.png';
+		</script>
+
+	</head>
+	<body>
+		<div class='container'>
+			<div class="row">
+					<ul class="nav nav-tabs">
+						<!-- Docs nav ================================================== -->
+						<?php 
+						$show_config = include(ROOT.'/data/dataconf.php');
+                        //var_dump($show_config);
+                        foreach($show_config as $k=>$v ){
+                            $text = $v['name'];
+                            $param = $v['param'];
+                            $param['coll'] = $k;
+                            $css = '';
+                            if($k == $action){
+                                $css = 'active';
+                            }
+                            $url = $v['href'];
+                            if(!$url)
+                                $url = url($param);
+                            echo "<li class='$css' ><a href='$url'  {$v['target']}  > {$text}</a></li>\n";
+                        }
+?>
+					</ul>
+			</div> 
+
+
+			<div class="row">
+				<div class='span10'>
+					<?php 
+                        if($this->bodyView)
+                            include $this->bodyView; 
+                        else 
+                            echo "<h1>建设中</h1>";
+
+                        if($_SERVER['notice'])
+
+                            echo "
+                            <div class='alert alert-warning'>
+                        {$_SERVER['notice']}
+                        </div>
+                        ";
+					/*
+					echo "<pre>";print_r($_REQUEST);
+					echo "</pre>";
+					*/
+					?>
+				</div>
+			</div> <!-- row -->
+
+		</div> <!-- container -->
+
+
+	</body>
+</html>
+<?php if($this->tailerView) include $this->tailerView; ?>
+<script>
+    $('#secsel').change(function(){var loc = $(this).val();window.location = loc;});
+</script>
