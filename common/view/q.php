@@ -38,7 +38,12 @@ if($filterstr){
         foreach($filters['rules'] as $ru){
             $op = $ru['op'];
             //if(in_array($op,array ('lte','eq','ne'))
-            $cond[$ru['field']][$optomon[$op]] = $ru['data'];
+            $dbop = $optomon[$op];
+            if($dbop){
+                $cond[$ru['field']][$dbop] = $ru['data'];
+            }else if($op == 'bw'){
+                $cond[$ru['field']] = new MongoRegex("/^{$ru['data']}/");
+            }
         }
     }
 }

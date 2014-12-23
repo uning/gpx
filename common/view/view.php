@@ -1,8 +1,7 @@
 
-          <div>
+    <div>
+      <h4  title='聚合是在浏览器做的，按回车搜索' >Group by: <select id="chngroup_<?php echo $coll?>">
 
-
-     Group by: <select id="chngroup_<?php echo $coll?>" tooltip='聚合是在浏览器做的，排序在服务器端做的'>
     <option value="clear" >无Group</option>    
 <?php 
     $dconf = &$show_config[$coll];
@@ -12,12 +11,12 @@
         $sel = '';
         if($group == -1){
             $group = $k;
-            $sel = 'selected';
+           // $sel = 'selected';
         }
       echo "<option value='$k' $sel>按$v</a></option>\n";
     }
 ?>
-    </select>
+    </select></h4>
 
 
           <table id='grid_<?php echo $coll?>'></table>

@@ -11,8 +11,8 @@
 
          <script src="<?php echo $curlp;?>/jui/1112/jquery-ui.js"></script>
         
-        <script src="<?php echo $curlp;?>/multiselect/js/jquery.uix.multiselect.js"></script>
-        <link rel="stylesheet" href="<?php echo $curlp;?>/multiselect/css/jquery.uix.multiselect.css">
+        <script src="<?php echo $curlp;?>/multiselect/js/ui.multiselect.js"></script>
+        <link rel="stylesheet" href="<?php echo $curlp;?>/multiselect/css/ui.multiselect.css">
 
         <script src="<?php echo $curlp?>/jqGrid/js/i18n/grid.locale-en.js" type="text/javascript"></script>
         <script src="<?php echo $curlp?>/jqGrid/js/jquery.jqGrid.min.js" type="text/javascript"></script>
@@ -70,6 +70,7 @@
 
     });
     */
+    $(document).tooltip();
     $(function() {
         $( "#tabs" ).tabs({
             beforeLoad: function( event, ui ) {

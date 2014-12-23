@@ -1,5 +1,4 @@
-
-var jqconf  = {};
+var jqconf ; //for debug
 
 jQuery(document).ready(function(){
     // Here we set the altRows option globally
@@ -9,6 +8,7 @@ jQuery(document).ready(function(){
         loadtext: "Loading...",
         pgtext : "Page {0} of {1}"
     });
+
     var COLL = '<?php echo $coll?>';
     var grid_id_jq  = '#grid_' + COLL;
     var pager_id_jq = '#pager_' + COLL;
@@ -27,16 +27,19 @@ jQuery(document).ready(function(){
     });
 
     jqconf = {
-
         url:'?action=q&__nl=1&coll='+COLL,
         jsonReader:{repeatitems:false},
+
+        //search in local
+        //loadonce: true,rowNum:50000,
         rowNum: 50,
+
+
         rowList: [50,80,50000],
-        height: '10%',
-        caption: '<?php echo $dconf["name"]?>',
+        height: 300,
+        //caption: '<?php echo $dconf["name"]?>',
         pager: pager_id_jq,
         shrinkToFit: false,
-        //loadonce: true,
         scroll:true,
         width: 1200,
         //height: 300,
@@ -50,7 +53,7 @@ jQuery(document).ready(function(){
 
         grouping: true,
         groupingView: {
-            groupField: ["<?php echo $group?>"],
+          //  groupField: ["<?php echo $group?>"],
             groupColumnShow: [true],
             groupText: ["<b>{0}</b>"],
             showSummaryOnHide:true,
@@ -102,6 +105,16 @@ jQuery(document).ready(function(){
     grido.jqGrid(jqconf)
 
 
+    
+    // activate the toolbar searching
+    grido.jqGrid('filterToolbar',{
+        // JSON stringify all data from search, including search toolbar operators
+        stringResult: true,
+        // instuct the grid toolbar to show the search options
+        searchOperators: true,
+        autosearch : false
+    });
+    
     //toolbar
     grido.jqGrid('navGrid',
                  pager_id_jq,
@@ -110,6 +123,7 @@ jQuery(document).ready(function(){
                      add:false,
                      del:false,
                      view:true,
+                     search: false, // show search button on the toolbar
                      position: "left", 
                      cloneToTop:true
 
@@ -127,7 +141,7 @@ jQuery(document).ready(function(){
                  //delete dialog
                  {
                  },
-                 //search
+                 //search dialog
                  {
                      multipleSearch:true,
                      multipleGroup:true,
@@ -140,7 +154,7 @@ jQuery(document).ready(function(){
         );
 
     //this not work with subGrid
-    grido.jqGrid("setFrozenColumns");
+    //grido.jqGrid("setFrozenColumns");
     // add first custom button
     grido.navButtonAdd(pager_id_jq,
                        {
@@ -153,6 +167,7 @@ jQuery(document).ready(function(){
                                grido.jqGrid('columnChooser');
                            }
                        });
+
     // on chang select value change grouping
     $("#chngroup_<?php echo $coll?>").change(function(){
         var vl = $(this).val();
