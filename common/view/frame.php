@@ -21,9 +21,9 @@ $leftmenu = array(
     array('id'=>'zjgf_chich','cntext'=>'持仓','pid'=>'zjgf','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader') )),
     array('id'=>'zjgf_chich','cntext'=>'持仓明细','pid'=>'zjgf','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header','groups'=>'date') )),
 
-    array('id'=>'import','cntext'=>'导入','pid'=>'root'),
-    array('id'=>'import_jl','cntext'=>'交易记录()','pid'=>'import','url'=>url(array('action'=>'import'))),
-    array('id'=>'import_t','cntext'=>'汇总zjgf','pid'=>'import','url'=>url(array('action'=>'importt'))),
+    //array('id'=>'import','cntext'=>'导入','pid'=>'root'),
+    array('id'=>'import_jl','cntext'=>'导入','pid'=>'root','url'=>url(array('action'=>'import'))),
+    //array('id'=>'import_t','cntext'=>'汇总zjgf','pid'=>'import','url'=>url(array('action'=>'importt'))),
 );
 
 ?>

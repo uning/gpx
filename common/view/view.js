@@ -100,11 +100,11 @@ var formatterBz = function(cellValue, options, rowObject){
         sgo.jqGrid('navGrid',"#"+pager_id,{edit:false,add:false,del:false});
         if(opts.me_edit)
             sgo.jqGrid('inlineNav', "#"+pager_id);
-        console.log('subGridExpand',row_id,subgrid_id,opts.url);
+        //console.log('subGridExpand',row_id,subgrid_id,opts.url);
         if(opts.datatype == 'local'){
             var rowdata = grido.getLocalRow(row_id);
             var bzs =  rowdata?rowdata.subg:null;
-            console.log('subGridExpand',row_id,subgrid_id,bzs);
+            //console.log('subGridExpand',row_id,subgrid_id,bzs);
             if('object' == jQuery.type(bzs)){
                 for(var i in bzs){
                     var bzo = bzs[i];
@@ -307,7 +307,6 @@ var formatterBz = function(cellValue, options, rowObject){
 
     var changeGroup =function() {
         var gstr = getSelStr();
-        //$('#chgrpbtn>div').html('Group by:'+groupsText);
         $('#chgrpbtn>div,#chngroup').html('Group by:'+groupsText);
         //console.log('Group click:',gstr);
         if(gstr === '' || gstr === 'gempty'){
@@ -342,7 +341,7 @@ var formatterBz = function(cellValue, options, rowObject){
 
 
 
-    // add first custom button on top
+    // add group button on top
     buttonopts = {
         //buttonicon: "ui-icon-calculator",
         title: "按选择字段Group",
@@ -352,6 +351,19 @@ var formatterBz = function(cellValue, options, rowObject){
         onClickButton:changeGroup,
     };
     grido.navButtonAdd(grid_id_jq + '_toppager', buttonopts);
+    buttonopts = {
+        buttonicon: "",
+        title: "展开折叠所有行",
+        id:'togglesubgrid',
+        caption: "ToggleSubGrid",
+        position: "last",
+        onClickButton:function(){
+           $.each(grido.getDataIDs(),function(a,did){
+               grido.toggleSubGridRow(did);
+           });
+        },
+    };
+    //grido.navButtonAdd(grid_id_jq + '_toppager', buttonopts);
 
     var gstr = getSelStr();
     $('#chgrpbtn>div,#chngroup').html('Group by:'+groupsText);

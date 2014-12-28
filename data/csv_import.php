@@ -56,6 +56,7 @@ foreach($files as $afn){
             echo "$fn match\n";
         }else{
             $id = $row['_id'] = md5($vstr);
+            App::normalTodb($row,$collconf['numfields']);
             $mc->findAndModify(array('_id'=>$id),array('$set'=>$row),array(),array('upsert'=>true));
             if($i%100 == 1){
                 echo "$fn import $i records \n";

@@ -117,6 +117,13 @@ class App extends PL_Application{
         }
         return $colModel;
     }
+
+    //转化为数字
+    static function normalTodb(&$row,&$options){
+        foreach($options as $k=>$v){
+            $row[$k] += 0;
+        }
+    }
 };
 
 
