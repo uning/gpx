@@ -14,7 +14,6 @@ class IndexServer  extends PL_Server_Page{
             return;
         }
 		$coll = $this->getParam('coll','jgd');
-        $show_config = include(ROOT.'/data/dataconf.php');
         $this->bodyView = $this->viewRoot."/$action.php";
         if(file_exists($this->bodyView)){
             if($_REQUEST['__nl']){

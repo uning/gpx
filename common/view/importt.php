@@ -5,7 +5,7 @@
 
 function clipbordExcelImportTotal($content){
     global $coll;
-    $dataconf = include(ROOT.'/data/dataconf.php');
+    $dataconf = &App::getDataconf();
     $dconf = $dataconf['zjgf'];
     $lines = explode("\n",$content);
     $mc = DbConfig::getMongodb('zjgf');

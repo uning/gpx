@@ -1,5 +1,5 @@
 <?php
-$dconf = &$show_config[$coll];
+$dconf = &App::getDataconf($coll);
 $doq = $this->getParam('doq');
 //持仓处理
 $chich = $this->getParam('chich');
@@ -8,6 +8,8 @@ $chich = $this->getParam('chich');
 $psidx = $this->getParam('psidx');//this param is overwrite by get data,but initGrid not suupport multiSort 
 $sord = $this->getParam('sord','desc');
 $multiSort = $this->getParam('multiSort',true);
+$sheader = $this->getParam('header','header');
+
 //返回表数据
 if($doq){
 $sort = array();
@@ -43,6 +45,10 @@ $page = $this->getParam('page',0);
 //todo procecess all ops
 $optomon = array('le'=>'$lte','eq'=>'$eq','lt'=>'$lt','gt'=>'$gt','ge'=>'$gte','ne'=>'$ne');
 $filterstr =$this->getParam('filters');
+$pfilterstr =$this->getParam('pfilters');
+if(!$filterstr){
+    $filterstr = $pfilterstr;
+}
 if($filterstr){
     $filters = json_decode($filterstr,true);
     if($filters['groupOp'] == 'AND'){
@@ -71,6 +77,18 @@ if($chich){
         $limit = 100000;//全部
     }else
         $chich = false;
+}
+
+
+if($coll == 'zjgf'){
+    $cond['istotal'] = 0;
+    if($sheader == 'theader'){
+        $cond['istotal'] = 1;
+    }
+    $prid = $this->getParam('prid');
+    if($prid)
+        $cond['istotal'] = 0;
+    
 }
 
 ///*
@@ -114,8 +132,9 @@ while($row = $c->getNext()){
             }
              
         }
+    }else if($coll == 'zjgf' && $sheader == 'theader'){
+        $rows[] = $row;
     }else{
-
         $rows[] = $row;
     }
 }
@@ -138,6 +157,10 @@ echo json_encode(array(
 return;
 }
 
+$subConf = array();
+
+$colModel = &$jqconf['colModel'];
+$colModel = App::getColModel($coll,$sheader);
 
 $jqconf['multiSort'] = $multiSort;
 
@@ -153,21 +176,27 @@ if($groupfs !== ''){
         $gv['groupColumnShow'][] = true;
         $gv['groupOrder'][] = 'desc';
     }
-    $multiSort = $jqconf['multiSort'] = false;
+    //$multiSort = $jqconf['multiSort'] = false;
     $jqconf['rowNum'] = 50000;//
     $jqconf['loadonce'] = 'true';
     $jqconf['groupDataSorted'] = true;
 
 }
+
 if($chich){
     $jqconf['rowNum'] = 50000;//
     $jqconf['loadonce'] = 'true';
     $jqconf['subGrid'] = true;
     $jqconf['chich'] = 1;
     $multiSort = $jqconf['multiSort'] = false;
+    //add hidden row
+    $colModel[] = array('name'=>'subg','hidden'=>true);
+    //$subConf['colModel'] = $colModel;
+    $subConf['datatype'] = 'local';
+    $subConf['me_edit'] = false;
 }
 
-    $jqconf['psidx'] = $psidx;
+$jqconf['psidx'] = $psidx;
 if(!$psidx && !$groupfs){
     $sortname = $this->getParam('sortname','0');
     $jqconf['sortname'] = $sortname;
@@ -184,14 +213,12 @@ $param['doq'] = '1';
 $param['multiSort'] = $multiSort;
 $jqconf['url'] = url($param);
 
-
-$colMap = $dconf['colModel'];
-$colModel = array();
-foreach($colMap as $k=>$v){
-    $colModel[] = $v;
+if($sheader == 'theader'){
+    $subConf['colModel'] = App::getColModel($coll,'header');
+    $subConf['urlp'] = url($param).'&prid=';
+    $subConf['me_edit'] = false;
+    $subConf['loadonce'] = true;
 }
-
-
 if(!$bz){
 ?>
 <style>
@@ -207,8 +234,12 @@ if(!$bz){
     $group = -1;
     foreach($groups as $k=>$v){
         $sel = 'ui-state-default';
-        if(in_array($k,$gps)){
-          $sel = 'ui-selected';
+        foreach($gps as $kk=>$vv){
+            //$bbb = $vv == $k;//bug php '0' == 'date' is true
+            //echo " {$bbb} [$k] [$vv]\n";#print_r($gps);
+            if($vv === $k){
+                $sel = 'ui-selected';
+            }
         }
       echo "<li ddvalue='$k' class='$sel'>$v</li>\n";
     }
@@ -230,9 +261,10 @@ if(!$bz){
 
 <?php 
 
- echo 'var cjqconf = '.json_encode($jqconf,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
- echo 'var colModel = '.json_encode($colModel,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
- echo  "var COLL = '$coll';\n";
+ echo "var COLL = '$coll';\n";
+ echo 'var groupsarr= '.json_encode($gps,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
+ echo 'var cjqconf = '.json_encode((object)$jqconf,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
+ echo 'var csubConf= '.json_encode((object)$subConf,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
  
     include __DIR__.'/view.js';
 ?>

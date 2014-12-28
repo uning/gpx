@@ -16,6 +16,11 @@ $leftmenu = array(
 
     array('id'=>'lscj','cntext'=>'历史成交','pid'=>'root'),
     array('id'=>'lscj_bz','cntext'=>'原因记录','pid'=>'lscj','url'=>url(array('action'=>'view','coll'=>'lscj','bz'=>1))),
+
+    array('id'=>'zjgf','cntext'=>'资金股份','pid'=>'root'),
+    array('id'=>'zjgf_chich','cntext'=>'持仓','pid'=>'zjgf','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader') )),
+    array('id'=>'zjgf_chich','cntext'=>'持仓明细','pid'=>'zjgf','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header','groups'=>'date') )),
+
     array('id'=>'import','cntext'=>'导入','pid'=>'root'),
     array('id'=>'import_jl','cntext'=>'交易记录()','pid'=>'import','url'=>url(array('action'=>'import'))),
     array('id'=>'import_t','cntext'=>'汇总zjgf','pid'=>'import','url'=>url(array('action'=>'importt'))),

@@ -15,7 +15,7 @@ var _dataInitColldata = function(grid,collInd){
         $(element).autocomplete({
             minLength: 0,
             source: function(request, response){
-                console.log('dataInit',grid,collInd,request);
+                //console.log('dataInit',grid,collInd,request);
                 var array = $(grid).jqGrid('getCol',collInd);
                 var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ) );
 
@@ -66,10 +66,11 @@ var formatterBz = function(cellValue, options, rowObject){
 
     var qurl = '?action=q&__nl=1&coll=' + COLL;
 
-    var bzOpts ={
-            url:"?action=bz&__nl=1&coll="+COLL+"&prid=",
-            editurl:"?action=bz&__nl=1&coll="+COLL+"&prid=",
+    var subConf ={
+            urlp:"?action=bz&__nl=1&coll="+COLL+"&prid=",
+            editurlp:"?action=bz&__nl=1&coll="+COLL+"&prid=",
             datatype: "json",
+            me_edit:true,
             colModel: [
                 {name:"id",label:'times',index:"time",key:true,hidden:true},
                 {name:"time",label:'时间',index:"time",width:80},
@@ -79,42 +80,31 @@ var formatterBz = function(cellValue, options, rowObject){
             rowNum:20,
             pgbuttons : false,
             height: '100%',
-        },subOpts={
-            datatype: "local",
-            colModel:  colModel,
-            rowNum:20,
-            pgbuttons : false,
-            height: '100%',
-        };
+    };
+
+    $.extend(true,subConf,csubConf || {});
     var subgridExpand = function(subgrid_id, row_id) {
         var subgrid_table_id, pager_id;
         subgrid_table_id = subgrid_id+"_t";
         pager_id = "p_"+subgrid_table_id;
         $("#"+subgrid_id).html("<table id='"+subgrid_table_id+"' class='scroll'></table><div id='"+pager_id+"' class='scroll'></div>");
-        var opts = bzOpts;
-        if(cjqconf.chich == 1){
-            opts = subOpts;
-           // opts.subGrid = true;
-        }
-        
-        
+        var opts = subConf;
         opts.pager = pager_id;
-        opts.url += row_id;
-        opts.editurl += row_id;
+        opts.url = opts.urlp + row_id;
+        opts.editurl = opts.urlp + row_id;
 
 
         var sgo = jQuery("#"+subgrid_table_id);
-        var rowdata = grido.getLocalRow(row_id);
-        var bzs =  rowdata?rowdata.bz:null;
+
         sgo.jqGrid(opts);
         sgo.jqGrid('navGrid',"#"+pager_id,{edit:false,add:false,del:false});
-        if(cjqconf.chich == 1){
-            bzs = rowdata.subg;
-        }else{
+        if(opts.me_edit)
             sgo.jqGrid('inlineNav', "#"+pager_id);
-        }
-        //console.log('subGridExpand',row_id,rowdata,bzs);
-        if(cjqconf.chich == 1)
+        console.log('subGridExpand',row_id,subgrid_id,opts.url);
+        if(opts.datatype == 'local'){
+            var rowdata = grido.getLocalRow(row_id);
+            var bzs =  rowdata?rowdata.subg:null;
+            console.log('subGridExpand',row_id,subgrid_id,bzs);
             if('object' == jQuery.type(bzs)){
                 for(var i in bzs){
                     var bzo = bzs[i];
@@ -124,16 +114,11 @@ var formatterBz = function(cellValue, options, rowObject){
                     }
                 }
             }
+        }
+
     };
 
 
-    //加隐藏列
-    if(cjqconf.chich){
-        colModel.push({
-            name: "subg",
-            hidden: true,
-        });
-    }
     jqconf ={
         url:qurl,
         jsonReader:{repeatitems:false},
@@ -147,7 +132,6 @@ var formatterBz = function(cellValue, options, rowObject){
         toppager:true,//call after custom button add ? element id = grid_id + '_toppager'
         //toolbar:[true,'both'],//
 
-        //caption: '<?php echo $dconf["name"]?>',
         pager: pager_id_jq,
         shrinkToFit: false,
         scroll:true,
@@ -164,7 +148,6 @@ var formatterBz = function(cellValue, options, rowObject){
         //subGrid: true,
         grouping: true,
         groupingView: {
-            // groupField: ["<?php echo $group?>"],
             // groupField: ['2'],
             //groupColumnShow: [true],
             //groupColumnShow: [false],
@@ -189,7 +172,7 @@ var formatterBz = function(cellValue, options, rowObject){
 
         userDataOnFooter: true,// use the userData parameter of the JSON response to display data on footer
 
-        colModel:colModel,
+       // colModel:colModel,
 
         subGridOptions: {
             plusicon: "ui-icon-triangle-1-e",
@@ -231,6 +214,9 @@ var formatterBz = function(cellValue, options, rowObject){
         // jqconf.colModel[i] = v;
     });
 
+    if(cjqconf.chich){
+        subConf.colModel = jqconf.colModel;
+    }
 
 
     grido = jQuery(grid_id_jq);
@@ -323,7 +309,7 @@ var formatterBz = function(cellValue, options, rowObject){
         var gstr = getSelStr();
         //$('#chgrpbtn>div').html('Group by:'+groupsText);
         $('#chgrpbtn>div,#chngroup').html('Group by:'+groupsText);
-        console.log('Group click:',gstr);
+        //console.log('Group click:',gstr);
         if(gstr === '' || gstr === 'gempty'){
             //alert('choose fields is empty!,clear group');
             grido.jqGrid('groupingRemove',true);
@@ -335,6 +321,7 @@ var formatterBz = function(cellValue, options, rowObject){
             gvSum.push(true);
             gvPos.push('footer');
         });
+        //grido.jqGrid('subGrid'
         grido.jqGrid('groupingGroupBy',gps,{groupSummary:gvSum,groupSummaryPos:gvPos});
     };
 

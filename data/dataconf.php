@@ -197,15 +197,6 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            'bz' => 
-            array (
-                'name' => 'bz',
-                'label' => '备注',
-                'width' => 75,
-                'editable' => 'true',
-                'edittype' => 'textarea',
-                'sortable' => false,
-            ),
             15 => 
             array (
                 'name' => '15',
@@ -415,14 +406,6 @@ return array (
                 'width' => 50,
                 'sorttype' => 'text',
             ),
-            'bz' => 
-            array (
-                'name' => 'bz',
-                'label' => '备注',
-                'width' => 75,
-                'editable' => 'true',
-                'edittype' => 'textarea',
-            ),
             15 => 
             array (
                 'name' => '15',
@@ -572,20 +555,12 @@ return array (
                 'width' => 50,
                 'sorttype' => 'text',
             ),
-            'bz' => 
-            array (
-                'name' => 'bz',
-                'label' => '备注',
-                'width' => 75,
-                'editable' => 'true',
-                'edittype' => 'textarea',
-            ),
         ),
     ),
     'zjgf'=>array(
         'name'=>'资金股份',
-        'stxtfields'=>array(0),
-        'sheader'=>array(
+        'theader_txtfields'=>array(0),
+        'theader'=>array(
             0 => '币种',
             1 => '余额',
             2 => '可用',
@@ -597,6 +572,12 @@ return array (
         'rr'=>array(
             0,1,2,3,4,'',5,6,7,8,9,10,11,12,13,14
         ),//融资融券字段对应
+        'groups'=>array(
+            'date'=>'日期',
+            '12'=>'证券代码',
+            '0'=>'证券名称',
+        ),
+        'sumops'=>array('8'=>'sum','7'=>'sum'),
         'header'=>array(
             0 => '证券名称',
             1 => '证券数量',

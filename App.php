@@ -26,6 +26,7 @@ $loader-> registerPrefixFallbacks(array(
  */
 
 class App extends PL_Application{
+    static  $dataconf ;
 	protected function __construct(){
 		parent::__construct();
 		$app = $this;
@@ -48,6 +49,74 @@ class App extends PL_Application{
     }
 
 
+    //获取配置
+    static function &getDataconf($coll = ''){
+        if($coll)
+            return static::$dataconf[$coll];
+        return static::$dataconf;
+    }
+    //colModel
+    static function getColModel($coll,$sheader='',$bzPos = 5){
+        $dconf = &static::$dataconf[$coll];
+        $colMap = $dconf['colModel'];
+        $colModel = array();
+        $i  = 0;
+        if($colMap){
+            foreach($colMap as $k=>$v){
+                $colModel[] = $v;
+                $i += 1;
+                if($i == $bzPos){
+                    $colModel[] =array (
+                        'name' => 'bz',
+                        'label' => '备注',
+                        'width' => 75,
+                        'editable' => 'true',
+                        'edittype' => 'textarea',
+                    );
+                }
+            }
+            return $colModel;
+        }
+        $colModel[] = array('name'=>'_id','key'=>true,'hidden'=>true);
+        $colModel[] = array('name'=>'date','label'=>'日期','width'=>70,'sorttype'=>'text');
+        $i = 1;
+        $txtname = ($sheader == 'header') ? 'txtfields':$sheader.'_txtfields';
+        if($dconf[$txtname])
+            $txtfields  = array_flip($dconf[$txtname]);
+        $txtname = ($sheader == 'header') ? 'sumops':$sheader.'_sumops';
+        $ops = $dconf[$txtname];
+        foreach($dconf[$sheader] as $k=>$v){
+            $colHeader = array('name'=>$k,'label'=>$v,'width'=>70,'sorttype'=>'number');
+            if(isset($txtfields[$k]))
+                $colHeader['sorttype'] = 'text';
+            if($ops[$k]){
+                $colHeader['summaryType'] = $ops[$k];
+                $colHeader['summaryTpl'] = '{0}';
+            }
+            $colModel[] = $colHeader;
+            $i += 1;
+            if($i == $bzPos){
+                $bzPos = false;
+                $colModel[] =array (
+                    'name' => 'bz',
+                    'label' => '备注',
+                    'width' => 75,
+                    'editable' => 'true',
+                    'edittype' => 'textarea',
+                );
+            }
+        }
+        if($bzPos > 0){
+                $colModel[] =array (
+                    'name' => 'bz',
+                    'label' => '备注',
+                    'width' => 75,
+                    'editable' => 'true',
+                    'edittype' => 'textarea',
+                );
+        }
+        return $colModel;
+    }
 };
 
 
@@ -65,7 +134,7 @@ class DbConfig extends   PL_Config_Db
 	static $mongodbs ;
 
 }
-
+App::$dataconf = require ROOT.'/data/dataconf.php';
 //init sub instance
 App::getInstance();
 

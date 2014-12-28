@@ -4,7 +4,7 @@
  */
 function clipbordExcelImport($content){
     global $coll;
-    $dataconf = include(ROOT.'/data/dataconf.php');
+    $dataconf = &App::getDataconf();
 
     $headerfind = false;
     $lines = explode("\n",$content);
@@ -86,7 +86,7 @@ if($content){
 <pre>
 <?php echo $error;?>
 </pre>
-    <form method='POST' action='?action=import'>
+    <form method='POST'>
     <input type=hidden  name='coll' value="<?php echo $coll?>"/>
     <input type="submit" value="提交"/>
     <br/>
