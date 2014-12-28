@@ -14,7 +14,7 @@ if($prid){
         }else{
             $now = $this->getParam('id');
         }
-        $datestr = @date('ymd H:i:s',$now);
+        $datestr = @date('Ymd H:i:s',$now);
         $upo = array('bz.'.$now=>array('time'=>$datestr,'content'=>$content));
         $mc->findAndModify(array('_id'=>$prid),array('$set'=>$upo),array(),array('upsert'=>true));
     }elseif($oper == 'del'){

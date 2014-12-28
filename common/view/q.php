@@ -3,6 +3,7 @@
 $cond = array();
 $mon = new PL_Db_Mongo(DbConfig::getMongodb($coll)); 
 
+
 $limit = $this->getParam('rows',20);
 $page = $this->getParam('page',0);
 
@@ -26,6 +27,7 @@ if($sidx){
             $sort[0] = 1;
 
 }
+
 
 
 //process query
@@ -52,12 +54,33 @@ if($filterstr){
 
 //echo " $limit $page" ,print_r($sort);
 $skip = $page < 1 ? 0 : ($page - 1)*$limit;
+
+//持仓处理
+$chich = $this->getParam('chich');
+if($chich){
+    $unidf = $this->getParam('unidf');
+    //use sidx
+//    $sortf = $this->getParam('sortf');
+//    $sort = array($datef=>-1);
+    $numf = $this->getParam('numf');
+    $skip = 0;
+    $limit = 100000;//全部
+}
 $c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,true);
-$headerr = $show_config[$coll]['header'][0];
+$collconf = $show_config[$coll];
+
+
 while($row = $c->getNext()){
-    if($row[0] == $headerr)
-        continue;
-    $rows[] = $row;
+    if($chich){
+        $unid = $row[$unidf];
+        if($unid && $appeared[$unid] < 1){
+            $appeared[$unid] = 1;
+            if($row[$numf] >0)
+                $rows[] = $row;
+        }
+    }else{
+        $rows[] = $row;
+    }
 }
 $records = $c->count();
 $total = ceil($records/$limit);

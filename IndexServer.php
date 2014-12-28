@@ -8,7 +8,11 @@ class IndexServer  extends PL_Server_Page{
     }
 
 	function handle(&$req = NULL){
-        $action = $this->getParam('action','view');
+        $action = $this->getParam('action');
+        if($action == ''){
+            require $this->viewRoot."/frame.php";
+            return;
+        }
 		$coll = $this->getParam('coll','jgd');
         $show_config = include(ROOT.'/data/dataconf.php');
         $this->bodyView = $this->viewRoot."/$action.php";
