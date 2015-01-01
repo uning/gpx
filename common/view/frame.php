@@ -1,11 +1,20 @@
 <?php
 $leftmenu = array(
+    array('id'=>'chich','cntext'=>'持仓','pid'=>'root','nurl'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'chich_zuixin','cntext'=>'最新持仓','pid'=>'chich','url'=>url(array('action'=>'view','except0'=>1,'coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'chich_zuixin','cntext'=>'持仓汇总','pid'=>'chich','url'=>url(array('action'=>'view','header'=>'theader','coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'chich_jisuan','cntext'=>'计算最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'calcc','coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'zjgf_chich','cntext'=>'券商合并持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader') )),
+    array('id'=>'zjgf_chichmx','cntext'=>'券商持仓明细','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header') )),
+
+
     array('id'=>'jgd','cntext'=>'交割单','pid'=>'root','nurl'=>url(array('action'=>'view','coll'=>'jgd'))),
-    array('id'=>'jgd_bz','cntext'=>'原因记录','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','bz'=>1))),
-    array('id'=>'jgd_chich','cntext'=>'s持仓','desc'=>'服务器计算的持仓','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','chich'=>1,'unidf'=>2,'numf'=>6,'psidx'=>'0 desc,16 desc'))),
+    array('id'=>'jgd_bz','cntext'=>'标注记录','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','bz'=>1))),
+    array('id'=>'jgd_chich','cntext'=>'s持仓','desc'=>'服务器计算的持仓','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','chich'=>1,'unidf'=>2,'numf'=>6,'psidx'=>'0 desc'))),
     array('id'=>'jgd_cz','cntext'=>'s操作汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','chich'=>1,'unidf'=>1,'psidx'=>'0 desc,16 desc'))),
     array('id'=>'jgd_chich0','cntext'=>'s持仓(含0)','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','chich'=>1,'unidf'=>2,'psidx'=>'0 desc,16 desc'))),
-    //array('id'=>'jgd_chichc','cntext'=>'c持仓','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'2'))),
+    array('id'=>'jgd_yz','cntext'=>'银证记录','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','condtpl'=>'jgdyz'))),
     array('id'=>'jgd_gphz','cntext'=>'按股票汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'2'))),
     array('id'=>'jgd_gpmzhz','cntext'=>'按股票买卖汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'2,1'))),
     array('id'=>'jgd_rqhz','cntext'=>'按日期汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'0'))),
@@ -17,9 +26,6 @@ $leftmenu = array(
     array('id'=>'lscj','cntext'=>'历史成交','pid'=>'root'),
     array('id'=>'lscj_bz','cntext'=>'原因记录','pid'=>'lscj','url'=>url(array('action'=>'view','coll'=>'lscj','bz'=>1))),
 
-    array('id'=>'zjgf','cntext'=>'资金股份','pid'=>'root'),
-    array('id'=>'zjgf_chich','cntext'=>'持仓','pid'=>'zjgf','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader') )),
-    array('id'=>'zjgf_chich','cntext'=>'持仓明细','pid'=>'zjgf','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header','groups'=>'date') )),
 
     //array('id'=>'import','cntext'=>'导入','pid'=>'root'),
     array('id'=>'import_jl','cntext'=>'导入','pid'=>'root','url'=>url(array('action'=>'import'))),
@@ -35,7 +41,7 @@ $leftmenu = array(
 		
 <script type="text/javascript">
 	var ctx = "";//url pre
-	var console = console||new Object();
+	var console = console||{};
 	console.info = console.info||function(){};
 <?php
  echo 'var leftmenu = '.json_encode($leftmenu,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';';
@@ -81,118 +87,7 @@ $leftmenu = array(
 </div>
 </body>
 <script>
-$(function(){
-
-    var menudata = leftmenu || [];
-    var id2menudata = {};
-     menudata.forEach(function(v){
-id2menudata[v.id] = v;
- 
-});
-    
-    function pageInit(){
-        createList();
-        addAction();
-    }
-    function addAction(){
-        $(".item-close").click(function(){
-            closeTab();
-        });
-        $(document).on("click",'.right-pane-title>div',function(){
-            console.log('click ',$(this).attr("src"));
-            selectTab($(this).attr("src"));
-        })
-    }
-    function createList(){
-        var showfield = "cntext";
-        $("#listMenu").listMenu({
-            parentField:"pid",
-            idField:"id",
-            captionField:"text",
-            rootId:"root",
-            multSelect: true,
-            onCreateText:function(data){
-                return data[showfield];
-            },
-            onClickItem:function(data){
-                if(data.url){
-                        var title = data[showfield];
-                    if(data.pid != 'root'){
-                        title = id2menudata[data.pid][showfield] + '>' +title;
-                    }
-                    addTab(title,ctx+data.url);
-                }
-            }
-        });//初始化
-        loadMenu();
-    }
-    function loadMenu(){
-
-        $("#listMenu").listMenu("load",menudata);
-    }
-
-    var tabUrlList = new Object();
-    var tabLength = 0;
-    function addTab(title,url){
-        if(tabLength>8){
-            alert("请先尝试关闭一些页面，再打开新页面");
-            return;
-        }
-        if(tabUrlList[url]){
-            selectTab(url);
-            return;
-        }
-        tabUrlList[url] = "1";
-        tabLength++;
-        var titleDom = $('<div class="title-item" style=" ">窗口1</div>');
-        var contentDom = $('<iframe src="" frameborder="0"></iframe>');
-
-        titleDom.attr({
-            src:url,
-            title:title
-        }).html(title);
-        contentDom.attr({
-            src:url
-        });
-        $(".right-pane-title").append(titleDom);
-        $(".right-pane-content").append(contentDom);
-        selectTab(url);
-
-    }
-    function selectTab(url){
-        var old = $(".right-pane-title .selected");//.removeClass("selected");
-        if(old.attr('url') == url)
-             return;
-        old.removeClass("selected");
-        $(".right-pane-title").find("[src='"+url+"']").addClass("selected");
-        $(".right-pane-content iframe").hide();
-        $(".right-pane-content").find("[src='"+url+"']").show();
-    }
-    function closeTab(){
-        var selected = $(".right-pane-title .selected");
-        if(selected.attr("freeze") === "true"){
-            return;
-        }
-        var next = selected.next();
-        var prev = selected.prev();
-        if(next.length>0){
-            tabUrlList[selected.attr("src")] = null;
-            tabLength--;
-            next.addClass("selected");
-            $(".right-pane-content").find("[src='"+selected.attr("src")+"']").remove();
-            selected.remove();
-            selectTab(next.attr("src"));
-        }else if(prev.length>0){
-            tabUrlList[selected.attr("src")] = null;
-            tabLength--;
-            $(".right-pane-content").find("[src='"+selected.attr("src")+"']").remove();
-            selected.remove();
-            selectTab(prev.attr("src"));
-        }
-    }
-
-    pageInit();
-})
+<?php include 'index.js';?>
 </script>
 
 

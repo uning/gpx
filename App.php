@@ -8,14 +8,14 @@ require PL_ROOT.'/bootstrap.php';
 $loader = PL_ApcClassLoader::getInstance();
 $loader->enableApc(false);
 $loader->registerPrefixes(array(
-	'model_' => __DIR__.'/common/'
+    'model_' => __DIR__.'/common/'
 ));
 
 
 $loader-> registerPrefixFallbacks(array(
-      PUB_CONTROLLER
-	  ,PUB_SERVER
-      ,PUB_COMMAND
+    PUB_CONTROLLER
+    ,PUB_SERVER
+    ,PUB_COMMAND
 ));
 
 /**
@@ -27,25 +27,25 @@ $loader-> registerPrefixFallbacks(array(
 
 class App extends PL_Application{
     static  $dataconf ;
-	protected function __construct(){
-		parent::__construct();
-		$app = $this;
-		$app['mods'] = array(
-			'index'=> ROOT.'/IndexServer.php'
-		);
-		PL_Session::$randsid = true;
-		 $app->mshare('session',
-			function () use($app){
-				//$u = $app->vget('uid');
-				//$sec = $app->vget('sec');
-				return PL_Session::start();
-			
-			});
-		$app->mshare('session.storage',   
-   			function () use($app){
-				//return new PL_Session_Redis();
-				return new PL_Session_File();
-			});
+    protected function __construct(){
+        parent::__construct();
+        $app = $this;
+        $app['mods'] = array(
+            'index'=> ROOT.'/IndexServer.php'
+        );
+        PL_Session::$randsid = true;
+        $app->mshare('session',
+            function () use($app){
+                //$u = $app->vget('uid');
+                //$sec = $app->vget('sec');
+                return PL_Session::start();
+
+            });
+        $app->mshare('session.storage',   
+            function () use($app){
+                //return new PL_Session_Redis();
+                return new PL_Session_File();
+            });
     }
 
 
@@ -55,74 +55,105 @@ class App extends PL_Application{
             return static::$dataconf[$coll];
         return static::$dataconf;
     }
-    //colModel
-    static function getColModel($coll,$sheader='',$bzPos = 5){
+
+
+
+    static function checkAddCol($i,&$cols,&$datePos,&$bzPos,&$idPos){
+        $max = 99;
+        if($i == $idPos || ($idPos >= 0 && $i > $max)){
+            $cols[] = array('name'=>'_id','key'=>true,'hidden'=>true);
+            $idPos = -1;
+        }
+        if($i == $datePos || ($datePos >= 0 && $i > $max)){
+            $cols[] =array('name'=>'date','label'=>'日期','stype'=>'text','width'=>70,'sorttype'=>'date');
+            $datePos = -1;
+        }
+        if($i == $bzPos || ($bzPos >= 0 && $i > $max)){
+            $cols[] = array('name' => 'bz','label' => '备注','width' => 100,'editable' => 'true', 'edittype' => 'textarea',);
+            $bzPos = -1;
+        }
+    }
+    /**
+     * pos 为负时，不显示该collumn
+     * 注意别重合
+     */
+    static function getColModel($coll
+        ,$sheader='header'
+        ,$datePos = 1
+        ,$bzPos = 5
+        ,$idPos = 0
+    ){
+            
         $dconf = &static::$dataconf[$coll];
         $colMap = $dconf['colModel'];
         $colModel = array();
         $i  = 0;
         if($colMap){
             foreach($colMap as $k=>$v){
+                static::checkAddCol($i,$colModel,$datePos,$bzPos,$idPos);
                 $colModel[] = $v;
                 $i += 1;
-                if($i == $bzPos){
-                    $colModel[] =array (
-                        'name' => 'bz',
-                        'label' => '备注',
-                        'width' => 75,
-                        'editable' => 'true',
-                        'edittype' => 'textarea',
-                    );
+            }
+        }else{
+            $txtname = ($sheader == 'header') ? 'txtfields':$sheader.'_txtfields';
+            if($dconf[$txtname])
+                $txtfields  = array_flip($dconf[$txtname]);
+            $txtname = ($sheader == 'header') ? 'sumops':$sheader.'_sumops';
+            $ops = $dconf[$txtname];
+
+            $txtname = ($sheader == 'header') ? 'sfields':$sheader.'_sfields';
+            $stypes = $dconf[$txtname];
+            foreach($dconf[$sheader] as $k=>$v){
+                $colHeader = array('name'=>$k,'label'=>$v,'width'=>70,'sorttype'=>'number');
+                if(isset($txtfields[$k]))
+                    $colHeader['sorttype'] = 'text';
+                if($ops[$k]){
+                    $colHeader['summaryType'] = $ops[$k];
+                    $colHeader['summaryTpl'] = '{0}';
                 }
-            }
-            return $colModel;
-        }
-        $colModel[] = array('name'=>'_id','key'=>true,'hidden'=>true);
-        $colModel[] = array('name'=>'date','label'=>'日期','width'=>70,'sorttype'=>'text');
-        $i = 1;
-        $txtname = ($sheader == 'header') ? 'txtfields':$sheader.'_txtfields';
-        if($dconf[$txtname])
-            $txtfields  = array_flip($dconf[$txtname]);
-        $txtname = ($sheader == 'header') ? 'sumops':$sheader.'_sumops';
-        $ops = $dconf[$txtname];
-        foreach($dconf[$sheader] as $k=>$v){
-            $colHeader = array('name'=>$k,'label'=>$v,'width'=>70,'sorttype'=>'number');
-            if(isset($txtfields[$k]))
-                $colHeader['sorttype'] = 'text';
-            if($ops[$k]){
-                $colHeader['summaryType'] = $ops[$k];
-                $colHeader['summaryTpl'] = '{0}';
-            }
-            $colModel[] = $colHeader;
-            $i += 1;
-            if($i == $bzPos){
-                $bzPos = false;
-                $colModel[] =array (
-                    'name' => 'bz',
-                    'label' => '备注',
-                    'width' => 75,
-                    'editable' => 'true',
-                    'edittype' => 'textarea',
-                );
+                if($stypes[$k]){
+                    $colHeader['stype'] = $stypes[$k];
+                }
+
+                static::checkAddCol($i,$colModel,$datePos,$bzPos,$idPos);
+                $colModel[] = $colHeader;
+                $i += 1;
             }
         }
-        if($bzPos > 0){
-                $colModel[] =array (
-                    'name' => 'bz',
-                    'label' => '备注',
-                    'width' => 75,
-                    'editable' => 'true',
-                    'edittype' => 'textarea',
-                );
-        }
+        static::checkAddCol(100,$colModel,$datePos,$bzPos,$idPos);
         return $colModel;
     }
 
-    //转化为数字
+
+
+    /**
+     *
+     * 转化为数字
+     */
     static function normalTodb(&$row,&$options){
         foreach($options as $k=>$v){
             $row[$k] += 0;
         }
+    }
+    //////////////////////////////////////////////////////////////////////
+    //PARA: Date Should In YYYY-MM-DD Format
+    //RESULT FORMAT:
+    // '%y Year %m Month %d Day %h Hours %i Minute %s Seconds'        =>  1 Year 3 Month 14 Day 11 Hours 49 Minute 36 Seconds
+    // '%y Year %m Month %d Day'                                    =>  1 Year 3 Month 14 Days
+    // '%m Month %d Day'                                            =>  3 Month 14 Day
+    // '%d Day %h Hours'                                            =>  14 Day 11 Hours
+    // '%d Day'                                                        =>  14 Days
+    // '%h Hours %i Minute %s Seconds'                                =>  11 Hours 49 Minute 36 Seconds
+    // '%i Minute %s Seconds'                                        =>  49 Minute 36 Seconds
+    // '%h Hours                                                    =>  11 Hours
+    // '%a Days                                                        =>  468 Days
+    //////////////////////////////////////////////////////////////////////
+    static function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
+    {
+        $datetime1 = date_create($date_1);
+        $datetime2 = date_create($date_2);
+        $interval = date_diff($datetime1, $datetime2);
+        return $interval->format($differenceFormat);
     }
 };
 
@@ -135,10 +166,10 @@ class DbConfig extends   PL_Config_Db
 {
     static $redises;
     static $caches;
-	static $mongodb_def_cstr = 'mongodb://localhost:30001';
-	static $mongodb_def_db = 'gupiaox';
-	static $mongodb_def_option  = array();
-	static $mongodbs ;
+    static $mongodb_def_cstr = 'mongodb://localhost:30001';
+    static $mongodb_def_db = 'gupiaox';
+    static $mongodb_def_option  = array();
+    static $mongodbs ;
 
 }
 App::$dataconf = require ROOT.'/data/dataconf.php';

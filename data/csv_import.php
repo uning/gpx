@@ -31,6 +31,7 @@ foreach($files as $afn){
     $header = $collconf['header'];
     $colcnt = count($header);
     $headerfind = false;
+    $i = 0;
     while( $row = fgetcsv($fd)){
         $vstr = '';
         foreach( $idfs as $v){
@@ -57,6 +58,7 @@ foreach($files as $afn){
         }else{
             $id = $row['_id'] = md5($vstr);
             App::normalTodb($row,$collconf['numfields']);
+            $row['_fnorder'] = $i;
             $mc->findAndModify(array('_id'=>$id),array('$set'=>$row),array(),array('upsert'=>true));
             if($i%100 == 1){
                 echo "$fn import $i records \n";

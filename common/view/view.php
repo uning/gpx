@@ -1,4 +1,10 @@
 <?php
+$vfile = $this->viewRoot."/{$coll}_view.php";
+if(file_exists($vfile)){
+    include($vfile);
+    return;
+}
+
 $dconf = &App::getDataconf($coll);
 $doq = $this->getParam('doq');
 //持仓处理
@@ -12,63 +18,9 @@ $sheader = $this->getParam('header','header');
 
 //返回表数据
 if($doq){
-$sort = array();
-//prcoess sort as string "0 dec,1 asc"
-$sidx = $this->getParam('sidx');
-if(!$sidx && $sidx !== '0'){
-    if($psidx)
-        $sidx = $psidx;
-}else{
-    $sidx .=' '.$sord;
-}
-preg_match_all('/[\s]*([\w]+)[\s]+([\w]+)[\s]*/',$sidx,$mout);
-foreach((array)$mout[1] as $k=>$v){
-    if($v == 'asc' || $v == 'desc')
-        continue;
-    if($mout[2][$k] == 'asc'){
-        $sort[$v] = 1;
-    }else
-        $sort[$v] = -1;
-} 
-
-
-$cond = array();
+        static::processGridAjaxParams($sort,$cond,$limit,$skip,$filterstr ,$sidx);
 $mon = new PL_Db_Mongo(DbConfig::getMongodb($coll)); 
 
-
-$limit = $this->getParam('rows',20);
-$page = $this->getParam('page',0);
-
-
-
-//process query
-//todo procecess all ops
-$optomon = array('le'=>'$lte','eq'=>'$eq','lt'=>'$lt','gt'=>'$gt','ge'=>'$gte','ne'=>'$ne');
-$filterstr =$this->getParam('filters');
-$pfilterstr =$this->getParam('pfilters');
-if(!$filterstr){
-    $filterstr = $pfilterstr;
-}
-if($filterstr){
-    $filters = json_decode($filterstr,true);
-    if($filters['groupOp'] == 'AND'){
-        foreach($filters['rules'] as $ru){
-            $op = $ru['op'];
-            //if(in_array($op,array ('lte','eq','ne'))
-            $dbop = $optomon[$op];
-            if($dbop){
-                $cond[$ru['field']][$dbop] = $ru['data'];
-            }else if($op == 'bw'){
-                $cond[$ru['field']] = new MongoRegex("/^{$ru['data']}/");
-            }
-        }
-    }
-}
-
-
-
-//echo " $limit $page" ,print_r($sort);
-$skip = $page < 1 ? 0 : ($page - 1)*$limit;
 if($chich){
     $unidf = $this->getParam('unidf');
     $numf = $this->getParam('numf');
@@ -84,6 +36,7 @@ if($coll == 'zjgf'){
     $cond['istotal'] = 0;
     if($sheader == 'theader'){
         $cond['istotal'] = 1;
+        //$limit = 50000;
     }
     $prid = $this->getParam('prid');
     if($prid)
@@ -118,8 +71,8 @@ while($row = $c->getNext()){
 
             $appeared[$unid]  = 1 + $rowidx;
 
-            $hrow[0] .= $unid;
-            $hrow[1] = '总计：';
+            $hrow[0] = $unid;
+            $hrow[3] = '总计：';
             $hrow['subg'][$rowid] = $row;
         }elseif($aidx > 0){
             
@@ -160,7 +113,9 @@ return;
 $subConf = array();
 
 $colModel = &$jqconf['colModel'];
-$colModel = App::getColModel($coll,$sheader);
+if($coll == 'jgd' || $coll == 'dzd')
+    $datepos = -1;
+$colModel = App::getColModel($coll,$sheader,$datepos);
 
 $jqconf['multiSort'] = $multiSort;
 
@@ -251,22 +206,6 @@ if(!$bz){
 <hr/>
 <?php 
 }?>
-
-
-          <table class='jqgrid' id='grid_<?php echo $coll?>'></table>
-          <div id='pager_<?php echo $coll?>'></div>
-
-
-<script>
-
 <?php 
-
- echo "var COLL = '$coll';\n";
- echo 'var groupsarr= '.json_encode($gps,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
- echo 'var cjqconf = '.json_encode((object)$jqconf,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
- echo 'var csubConf= '.json_encode((object)$subConf,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE).';'."\n";
- 
-    include __DIR__.'/view.js';
-?>
-</script>
+include  __DIR__.'/part_grid.php';
 

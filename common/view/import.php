@@ -65,6 +65,7 @@ function clipbordExcelImport($content,&$coll,&$myerrorno){
                 $i += 1;
             }
             App::normalTodb($row,$collconf['numfields']);
+            $row['_fnorder'] = $i;
             $mc->findAndModify($cond,array('$set'=>$row),array(),array('upsert'=>true));
         }
     }
@@ -209,5 +210,5 @@ if($content){
     <input type=hidden  name='coll' value="<?php echo $coll?>"/>
     <input type="submit" value="提交"/>
     <br/>
-    <textarea name='content' cols='100' rows='30'><?php echo $content;?></textarea>
+    <textarea name='content' cols='100' rows='30'><?php //echo $content;?></textarea>
 </form>

@@ -20,10 +20,6 @@ return array (
             11 => 13,
             12 => 16,
         ),
-        'aheader' => 
-        array (
-            'comment' => '原因记录',
-        ),
         'groups' => 
         array (
             0 => '交割日期',
@@ -69,21 +65,14 @@ return array (
             18 => '资金帐号',
         ),
         'colModel' => 
-        array (
-            '_id' => 
-            array (
-                'name' => '_id',
-                'hidden' => true,
-                'frozen' => true,
-                'key' => true,
-                'sortable' => false,
-            ),
+        array(
+            //'_fnorder'=>array('name' => '_fnorder','label'=>'fn'),
             0 => 
             array (
                 'name' => '0',
                 'label' => '交割日期',
                 'width' => 90,
-                'stype' => 'text',
+                'stype' => 'date',
                 'frozen' => true,
                 'summaryTpl' => 'total:{0}',
                 'summaryType' => 'count',
@@ -98,6 +87,7 @@ return array (
                 'frozen' => true,
                 'sorttype' => 'text',
             ),
+
             2 => 
             array (
                 'name' => '2',
@@ -192,6 +182,7 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
+            /*
             13 => 
             array (
                 'name' => '13',
@@ -224,6 +215,7 @@ return array (
                 'width' => 60,
                 'sorttype' => 'text',
             ),
+             //*/
             17 => 
             array (
                 'name' => '17',
@@ -306,12 +298,6 @@ return array (
         ),
         'colModel' => 
         array (
-            '_id' => 
-            array (
-                'name' => '_id',
-                'hidden' => true,
-                'key' => true,
-            ),
             0 => 
             array (
                 'name' => '0',
@@ -482,12 +468,6 @@ return array (
         ),
         'colModel' => 
         array (
-            '_id' => 
-            array (
-                'name' => '_id',
-                'hidden' => true,
-                'key' => true,
-            ),
             0 => 
             array (
                 'name' => '0',
@@ -638,4 +618,113 @@ return array (
             15 => '资金帐号',
         ),
     ),
+    'dzd'=>array(
+        'header'=>array (
+            0 => '成交日期',
+            1 => '业务名称',
+            2 => '证券代码',
+            3 => '证券名称',
+            4 => '成交价格',
+            5 => '成交数量',
+            6 => '成交金额',
+            7 => '发生金额',
+            8 => '剩余金额',
+            9 => '币种',
+            10 => '成交编号',
+            11 => '股东代码',
+            12 => '资金帐号',
+        ),
+        'sumops'=>array('7'=>'sum'),
+        'idfs'=>array(0,1,2,5,7,8,10),
+        'groups'=>array(
+            0 => '成交日期',
+            1 => '业务名称',
+            2 => '证券代码',
+            3 => '证券名称',
+        ),
+        'numfields'=>array(
+            4 => '成交价格',
+            5 => '成交数量',
+            6 => '成交金额',
+            7 => '发生金额',
+            8 => '剩余金额',
+        )
+    ),
+    'calcc'=>array(
+
+        'sfields'=>array(2=>'text','3'=>'text','chtime'=>number),//搜索的字段
+        'header'=>array(
+            2 => '证券代码',
+            3 => '证券名称',
+            6 => '证券数量',
+            '4' => '当前价',
+            'pdate' => '价格日期',
+
+            'zxsz' => '最新市值',
+            '8'=>'清算额',
+            'cdate' =>'开始建仓',
+            'chtime'=>'持仓天数',
+
+            'ljmr' => '累计买入',
+            'fdyk' => '浮动盈亏',
+            'ykbl' => '盈亏比例(%)',
+            'zcbl' => '占仓比例(%)',
+            'cbj' => '成本价', //  清算/剩余数量
+            'ldate'=>'最后操作',
+            10 => '佣金',
+            11 => '印花税',
+            12 => '过户费',
+            //'date'=>'持仓日期',//关联日期，标示某一天的持仓
+            //13 => '结算费',
+            //14 => '附加费',
+        ),
+        'theader'=>array(
+            'date'=>'日期',
+            'zxsz' => '最新市值',
+            'zc' => '资产总额',
+            'kyye' => '可用余额',
+            8 => '结算余额',
+            'jsyk' => '计算盈亏', //资产总额 - 银行流入
+            'ljyk' => '累计盈亏', //∑股票盈亏
+            'cw' => '仓位(%)',//市值/资产总额
+            'ykbl' => '盈亏比例(%)',
+            'yinhangtr'=>'银行投入',
+            10 => '佣金',
+            11 => '印花税',
+            12 => '过户费',
+            'yinhangzr'=>'银行转入',
+            'yinhangzc'=>'银行转出',
+            'rongzich'=>'融资偿还',
+            'rongzijr'=>'融资借入',
+            'rongzilx'=>'融资利息',
+            //13 => '结算费',
+            //14 => '附加费',
+        ),
+
+        'jgdheader'=>array(
+            0 => '交割日期',
+            1 => '业务名称',
+            3 => '证券名称',
+            6 => '剩余数量',
+            4 => '成交价格',
+            'chtime'=>'持仓天数',
+            5 => '成交数量',
+
+            7 => '成交金额',
+            8 => '清算金额',
+
+            10 => '佣金',
+            11 => '印花税',
+            12 => '过户费',
+            //13 => '结算费',
+            //14 => '附加费',
+            //15 => '币种',
+            //9 => '剩余金额',
+            //2 => '证券代码',
+            //16 => '成交编号',
+            //17 => '股东代码',
+            //18 => '资金帐号',
+        ),
+    ),
+
 );
