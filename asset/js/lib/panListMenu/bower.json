@@ -1,0 +1,31 @@
+{
+  "name": "panlist",
+  "version": "1.0",
+  "keywords": [
+    "css",
+    "js",
+    "less",
+    "mobile-first",
+    "responsive",
+    "front-end",
+    "framework",
+    "web"
+  ],
+  "main": [
+    "panListMenu.css",
+    "panListMenu.js",
+    "imgs/close.png",
+    "imgs/open.png",
+    "imgs/item.png",
+    "imgs/group.png",
+  ],
+  "ignore": [
+    "/.*",
+    "_config.yml",
+    "CNAME",
+    "composer.json",
+  ],
+  "dependencies": {
+    "jquery": ">= 1.9.1"
+  }
+}
