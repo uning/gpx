@@ -679,7 +679,7 @@ return array (
             //14 => '附加费',
         ),
         'theader'=>array(
-            'date'=>'日期',
+         //   'date'=>'日期',
             'zxsz' => '最新市值',
             'zc' => '资产总额',
             'kyye' => '可用余额',

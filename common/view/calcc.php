@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__.'/../../base.php';
+const PSPACE = 'calccp';
+//todo: 优化存储结构,没有改变的不再每天存储
+//根据原始记录能计算的,放到显示处,不在这里计算
+//
 echo "<pre>";
 $coll = 'jgd';
 $mon = new PL_Db_Mongo(DbConfig::getMongodb($coll)); 
@@ -7,28 +11,55 @@ $sort = array('0'=>1,'_fnorder'=>1);
 $limit = 1000000;
 $skip = 0;
 $datestr = $argv[1];
-$datestr = static::getParam('date',date('Ymd'));
+//$datestr = static::getParam('date',date('Ymd'));
 if(!$datestr){
     $datestr = date('Ymd');
 }
-$cond = array('0'=>array('$lte'=>$datestr));
+
+$cond['$and'][] = (object)array('0'=>array('$lte'=>$datestr));
+
+//*
+$zqrs = DbConfig::getParam('zqrs',PSPACE);
+$totalr = DbConfig::getParam('totalr',PSPACE);
+$rrsyje = DbConfig::getParam('rrsyje',PSPACE);
+$presyje = DbConfig::getParam('presyje',PSPACE);
+//$ = DbConfig::getParam('totalr',PSPACE);
+$sdate = $totalr['date'] ;
+$cond['$and'][] = (object)array('0'=>array('$gt'=>$sdate));
+
+/*
+print_r($cond);
 $c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,true);
+while($row = $c->getNext()){
+    $jgrq = $row[0];//交割日期
+    echo "$jgrq \n";
+}
+echo json_encode(array(
+    'totalr'=>$totalr,
+    //'zqrs'=>$zqrs,
+    'date'=>$sdate,
+    'rrsyje'=>$rrsyje,
+    'presyje'=>$presyje,
+
+),JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
+return;
+//*/
+$c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,true);
+
 
 /**
  * 保存一天的持仓记录
  * 累计计算，后续改成增量计算的，多个值计算
  *
  * 汇总头部见 dateconf[calcc]
- *
  */
-function saveDay($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
+function saveDayN($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     //获取股票当天价格
     $curcc = $mon->findByIndex('zjgf',array('date'=>$prejgrq),10000,0,array());
     foreach($curcc as $k=>$v){
         if($v['istotal'] == 1){
              $okyye = $v[2] + 0; //可用余额
              $otzxsz = $v[3]; //市值
-
         }
         $mmgu[$v[12]] = $v;
     }
@@ -47,19 +78,22 @@ function saveDay($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
             echo "[$k] [{$v[3]}] notfind in result\n";
             //print_r($v);
         }
+
         //check?
-        if($ov[2] != $zqnum ){//库存数量不相等
+        if($ov2 && $ov[2] != $zqnum ){//库存数量不相等
             echo "[$k] [{$ov[0]}] [{$ov[2]}] [$zqnum] 证券数量 noteq in result\n";
             //not save this;
             if($checked){
              //   continue;
             }
         }
+
         if($ov){
             $v[4] = $ov[6]; //当前价
             $zxsz = $v['zxsz'] = $ov[7];//最新市值
             $v['pdate'] = $prejgrq;
         }
+
         if($zqnum > 0){ //有的持仓
             if($zxsz < 1){
                 $zxsz = $zqnum * $v[4];
@@ -98,18 +132,23 @@ function saveDay($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
         if($v['cdate']){
             $v['chtime'] = App::dateDifference($v['cdate'],$v['ldate']); 
         }
-
         //可以只存有改变的,为方便全部保存
-        $v['date'] = $prejgrq;
-        $id = $v['_id'] = $k.'_'.$prejgrq;
-        $mon->save($v);
+        if($v['ldate'] == $prejgrq || $zqnum != 0){
+            $v['date'] = $prejgrq;
+            if($zqnum != 0 ){
+                $id = $v['_id'] = $k.'_'.$prejgrq;
+                $mon->save($v);
+            }else{
+                $id = $v['_id'] = $k.'_zero';
+                $mon->save($v);
+            }
+        }
     }
     $pretid = "total_$prejgrq";
     $tr = &$totalr;
 
     //$tr[8] = round($tr[8],3);
     $tr['date'] = $prejgrq;
-    $tr['zqids'] = $zqids;
     if($otzxsz)
         $tr['zxsz'] = $otzxsz;//参考市值
     else
@@ -121,15 +160,12 @@ function saveDay($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     }
 
     $tr['kyye'] = $kyye;
+
     $tr['zc'] = $tr['zxsz'] + $kyye;//资产
-
     $touru = $tr['yinhangzr'] + $tr['yinhangzc'];
-
     $tr['yinhangtr'] = $touru;
-
     $tr['jsyk'] = $tr['zc'] - $touru;//盈亏
     $tr['ljyk'] = $tfdyk;
-
     $tr['ykbl'] = round($tr['jsyk']*100/$touru,3);
     $tr['cw'] = round($tr['zxsz']*100/$tr['zc'],3);
     $tr['_id']  = $pretid;
@@ -143,14 +179,57 @@ function saveDay($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     echo "\n\n======\n$info";
 }
 
+
+function saveDay($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
+    $tzxsz = 0 ;
+    $tfdyk = 0;
+    foreach($zqrs as $k=>$v){
+        $v['istotal'] = 0;
+        $zqnum = $v[6]; //证券数量
+        $zxsz = 0;
+        $fdyk = 0;
+        $zqs = $v[8];//最终清算额度
+        if($zqnum > 0){ //有的持仓
+            $price = $v[4];//当前价格
+            $zxsz = $zqnum * $v[4];
+            $v['zxsz'] = $zxsz;
+        }elseif($zqnum < 0){//融券卖出的情况
+            //暂时不处理
+            //$zxsz = $zqs;
+        }else{
+            $zxsz = 0;
+            $v[6] = 0;//设置为0，为显示
+        }
+
+        //方便一次算比例
+        $tfdyk += $zxsz + $zqs;
+        $tzxsz += $zxsz;
+
+        if($v['ldate'] == $prejgrq || $zqnum  != 0){
+            $v['date'] = $prejgrq;
+            $id = $v['_id'] = $k.'_'.$prejgrq;
+            $mon->save($v);
+        }
+    }
+    $pretid = "total_$prejgrq";
+    $tr = &$totalr;
+    $tr['date'] = $prejgrq;
+    $tr['zxsz'] = $tzxsz;//市值
+    $tr['ljyk'] = $tfdyk;
+    $tr['_id']  = $pretid;
+    $tr['istotal'] = 1;
+    $mon->save($tr);
+}
+
+
 $zh2gu = array(
     '110018'=>'600795',//国电电力
     '113001'=>'601988',
 );
 $sg2gu = array();
-$totalrs = array();
+//$totalrs = array();
 $prejgrq = null;
-$zqrs  = array();
+//$zqrs  = array();
 
 //证券公司记录错误
 $yefixed['20140819-245743.08-600704'] = 3;
@@ -161,6 +240,7 @@ while($row = $c->getNext()){
     $ywmc = $row[1];//业务名称
     $zqdm = $row[2];//证券代码
     $jgrq = $row[0];//交割日期
+    //echo "$jgrq \n";continue;
 
     if(!$ywmc){
         echo "no ywmc $jgrq $ywmc $zqdm \n";
@@ -168,7 +248,7 @@ while($row = $c->getNext()){
     }
     if( $prejgrq != $jgrq){ //
         if($prejgrq){
-            //saveDay($prejgrq,$mon,$totalr,$zqrs);
+            saveDayN($prejgrq,$mon,$totalr,$zqrs);
         }
         $prejgrq = $jgrq;
     }
@@ -308,10 +388,15 @@ echo "清算额:[$qse] ==  [$syje] = [{$row[9]}]  [$rrsyje] [$presyje]\n";
 
 
 //*
-saveDay($jgrq,$mon,$totalr,$zqrs);
-echo json_encode(array(
-    'totalr'=>$totalr,
+saveDayN($jgrq,$mon,$totalr,$zqrs);
+
+$hisdata = array(
+    'prejgrq'=>$prejgrq,
+    'presyje'=>$presyje,
+    'rrsyje'=>$rrsyje,
     'zqrs'=>$zqrs,
-    'date'=>$jgrq
-),JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
+    'totalr'=>$totalr,
+);
+DbConfig::saveParam($hisdata,'',PSPACE);
+echo json_encode($hisdata,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
 //   */

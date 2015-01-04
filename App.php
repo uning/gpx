@@ -171,6 +171,33 @@ class DbConfig extends   PL_Config_Db
     static $mongodb_def_option  = array();
     static $mongodbs ;
 
+    const SPACE_PREFIX = 'idpre_';
+
+
+    static $paramsFromDb;
+    /**
+     * 一个space 存一条记录
+     */
+    static function getParam($name = '',$space = 'defaut'){
+        $g = & static::$paramsFromDb[$space];
+        if(!$g){
+            $mc = static::getMongodb('progparams');
+            $cond = array('_id'=>self::SPACE_PREFIX.$space);
+            $g = $mc->findOne($cond);
+        }
+        if($name)
+            return $g[$name];
+        return $g;
+
+    }
+    static function saveParam($name,$value = '',$space = 'defaut' ){
+        $cond = array('_id'=>self::SPACE_PREFIX.$space);
+        $mc = static::getMongodb('progparams');
+        if($value){
+            $name = array($name=>$value);
+        }
+        $mc->findAndModify($cond,array('$set'=>$name),array(),array('upsert'=>true));
+    }
 }
 App::$dataconf = require ROOT.'/data/dataconf.php';
 //init sub instance

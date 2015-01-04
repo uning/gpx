@@ -5,8 +5,13 @@ tools/*
 data/*
 show/*
 t.*
+t
 views/*
 log/*
 crawler/cache/*
 tags
 *.bak
+\.*
+
+bower_*
+node_*

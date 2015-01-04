@@ -113,8 +113,9 @@ return;
 $subConf = array();
 
 $colModel = &$jqconf['colModel'];
-if($coll == 'jgd' || $coll == 'dzd')
     $datepos = -1;
+if($coll == 'zjgf')
+    $datepos = 0;
 $colModel = App::getColModel($coll,$sheader,$datepos);
 
 $jqconf['multiSort'] = $multiSort;
@@ -175,37 +176,7 @@ if($sheader == 'theader'){
     $subConf['loadonce'] = true;
 }
 if(!$bz){
-?>
-<style>
-  #selectable .ui-selecting { background: #FECA40; }
-  #selectable .ui-selected { background: #F39814; color: white; }
-  #selectable { list-style-type: none; margin: 0; padding: 0; width: 90%; }
-  #selectable li { margin: 3px; padding: 1px; float: left; text-align: center; }
-  </style>
-<div class ='group-selector'>
- <ol id="selectable">
-<?php 
-    $groups = $dconf['groups'];
-    $group = -1;
-    foreach($groups as $k=>$v){
-        $sel = 'ui-state-default';
-        foreach($gps as $kk=>$vv){
-            //$bbb = $vv == $k;//bug php '0' == 'date' is true
-            //echo " {$bbb} [$k] [$vv]\n";#print_r($gps);
-            if($vv === $k){
-                $sel = 'ui-selected';
-            }
-        }
-      echo "<li ddvalue='$k' class='$sel'>$v</li>\n";
-    }
-?>
-      <li ddvalue='gempty' class='ui-state-default'>清除Group</li>
-</ol>
-</div>
-<div><button title='按住ctrl 选择多个,聚合是在浏览器做的，按回车搜索'   id="chngroup">Group By:</button></div>
-<hr/>
-<?php 
-}?>
-<?php 
+    include __DIR__.'/part_group.php';
+}
 include  __DIR__.'/part_grid.php';
 

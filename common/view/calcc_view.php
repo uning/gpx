@@ -1,6 +1,5 @@
 <?php
 
-//$coll = 'calcc';
 $sheader = $this->getParam('header','header');
 $doq = $this->getParam('doq');
 $lastest = static::getParam('lastest');
@@ -13,51 +12,79 @@ if($doq){
         $parr= explode('_',$prid);
         $zqdm = $parr[0];
     }
+
+    //请求具体证券的交割记录
     if($zqdm && $zqdm != 'total'){
         $limit = 10000;
         $skip = 0;
         $sort =array(0=>-1,16=>-1);//交易倒序
         $cond = array(2=>$zqdm);
+        $ccdate = $parr[1];
         $c = $mon->findByIndex('jgd',(object)$cond,$limit,$skip,array(),(object)$sort,true);
     }else{
+        //请求calcc
         static::processGridAjaxParams($sort,$cond,$limit,$skip,$filterstr ,$sidx);
+
+
         if($lastest == 'lastest'){
             $c = $mon->findByIndex($coll,(object)$cond,1,0,array(),array('date'=>-1),true);
             $row = $c->getNext();
             $cond['date'] = $row['date'];
-        }elseif($lastest)
+        }elseif($lastest){
             $cond['date'] = $lastest; 
+        }
 
-        if(static::getParam('except0')){
-            $cond[6]['$ne'] = 0;
+        //获取为0的
+        if(static::getParam('include0')){
+            //$cond[6]['$ne'] = 0;
+            $ocond = $cond;
+            $cond = array();
+            $cond['$or'][] = array(6=>0);
+            $cond['$or'][]= $ocond;
+
+            $ocond = $cond;
+            $cond = array();
+            $cond['$and'][] = array(8=>array('$ne'=>0)); //去掉申购的，认为申购未中签的,清算额为0
+            $cond['$and'][]= $ocond;
         }
 
 
         if($sheader == 'theader'){
             $cond['istotal'] = 1;
+            if(!$sort){
+                $sort['date'] = -1;
+            }
         }else{
-            if(!$lastest)
+            if(!$lastest){
                 $cond['istotal'] = 0;
+                //股票聚合
+                if(!$sort){
+                    $sort = array('date'=>-1);
+                }
+            }
         }
-
 
         if($zqdm == 'total'){
             $cond = array('date'=> $parr[1]);
             $cond['istotal'] = 0;
         }
+
+        $sort['istotal'] = -1;
         $c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,true);
     }
+
+
     while($row = $c->getNext()){
-        if($prid){
-            $row['chtime'] = App::dateDifference($row[0],'today');
-        }
-        if($row['istotal'] == 0 || $cond['istotal'])
+        //交割单处理
+        if($ccdate)
+            $row['chtime'] = App::dateDifference($row[0],$ccdate); 
+
+        if($row['istotal'] == 0 || isset($cond['istotal'])){
             $rows[] = $row;
-        else{//userData
+        }else{//userData
             $userData = $row;
             $dconf = App::getDataconf('calcc');
             $header = $dconf['theader'];
-            
             foreach($header as $k=>$v){
                 $str.= $v.':'.$row[$k].',';
             }
@@ -92,16 +119,6 @@ $colModel = &$jqconf['colModel'];
 $jqconf['multiSort'] = static::getParam('multiSort',false);
 
 $jqconf['footerrow'] = false;
-if($lastest){
-    $jqconf['loadonce'] = true;
-    $jqconf['footerrow'] = true;
-    $jqconf['rowNum'] = 50000;//
-    $jqconf['subGrid'] =true;
-    $subConf['colModel'] = App::getColModel($coll,'jgdheader' ,-1,9);
-    $subConf['me_edit'] = false;
-    $subConf['loadonce'] = true;
-    $subConf['subGrid'] = true;
-}
 
 
 $param = $_REQUEST;
@@ -112,12 +129,18 @@ $datepos = 0;
 
 $colModel = App::getColModel($coll,$sheader,$datepos,-1);
 $subConf['loadonce'] = true;
-
+$subConf['me_edit'] = false;
+$jqconf['subGrid'] = true;
+$subConf['subGrid'] = true;
 if($sheader == 'theader'){
-    $subConf['colModel'] = App::getColModel($coll,'header',-1);
-    $subConf['me_edit'] = false;
-    $jqconf['footerrow'] = false;
-    //$subConf['datatype'] = 'local';
+    $subConf['colModel'] = App::getColModel($coll,'header',-1,-1);
+}else{
+    if($lastest){
+        $jqconf['loadonce'] = true;
+        $jqconf['rowNum'] = 50000;//
+        $jqconf['footerrow'] = true;
+    }
+    $subConf['colModel'] = App::getColModel($coll,'jgdheader' ,-1,9);
 }
 $subConf['urlp'] = url($param).'&prid=';
 
