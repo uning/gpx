@@ -52,8 +52,8 @@ $leftmenu = array(
 
 </script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
-<link rel="stylesheet" href="bower_components/panListMenu/listMenu.css" />
-<script type="text/javascript" src="bower_components/panListMenu/listMenu.js"></script>
+<link rel="stylesheet" href="asset/js/lib/panListMenu/listMenu.css" />
+<script type="text/javascript" src="asset/js/lib/panListMenu/listMenu.js"></script>
 <style>
     body{
         font-family: 'Microsoft Yahei';
