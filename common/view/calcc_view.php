@@ -3,6 +3,7 @@
 $sheader = $this->getParam('header','header');
 $doq = $this->getParam('doq');
 $lastest = static::getParam('lastest');
+$dconf = &App::getDataconf($coll);
 
 //返回表数据
 if($doq){
@@ -11,6 +12,7 @@ if($doq){
     if($prid){//请求交割记录
         $parr= explode('_',$prid);
         $zqdm = $parr[0];
+        $rowdata = json_decode(static::getParam('rowdata'),true);
     }
 
     //请求具体证券的交割记录
@@ -20,6 +22,7 @@ if($doq){
         $sort =array(0=>-1,16=>-1);//交易倒序
         $cond = array(2=>$zqdm);
         $ccdate = $parr[1];
+        $ccdate = $rowdata['date'];
         $c = $mon->findByIndex('jgd',(object)$cond,$limit,$skip,array(),(object)$sort,true);
     }else{
         //请求calcc
@@ -35,7 +38,7 @@ if($doq){
         }
 
         //获取为0的
-        if(static::getParam('include0')){
+        if($include0 = static::getParam('include0')){
             //$cond[6]['$ne'] = 0;
             $ocond = $cond;
             $cond = array();
@@ -70,16 +73,25 @@ if($doq){
         }
 
         $sort['istotal'] = -1;
+        $sort[6] = -1;
         $c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,true);
     }
 
 
+    $zqdms = array();
     while($row = $c->getNext()){
+        if($lastest && $include0 && !$prid){
+            $zqdm = $row[2];
+            if($zqdms[$zqdm] )
+                continue;
+            $zqdms[$zqdm] = 1;
+        }
         //交割单处理
         if($ccdate)
             $row['chtime'] = App::dateDifference($row[0],$ccdate); 
 
         if($row['istotal'] == 0 || isset($cond['istotal'])){
+            $row['_forsum'] = '_forsum';
             $rows[] = $row;
         }else{//userData
             $userData = $row;
@@ -139,9 +151,19 @@ if($sheader == 'theader'){
         $jqconf['loadonce'] = true;
         $jqconf['rowNum'] = 50000;//
         $jqconf['footerrow'] = true;
+        
+        $colModel[] = array('name'=>'_forsum','label'=>'求和','width'=>20);
+        $colModel[] = array('name'=>'ssjg','label'=>'实时价格','width'=>70,'sorttype'=>'number');
+        $colModel[] = array('name'=>'sszf','label'=>'今日涨幅%','width'=>70,'sorttype'=>'number');
+        $colModel[] = array('name'=>'ssyk','label'=>'实时总盈亏','width'=>70,'sorttype'=>'number');
+       $colModel[] = array('name'=>'jryk','label'=>'今日盈亏','width'=>70,'sorttype'=>'number');
+        $jqconf['sshqColModel'] = App::getColModel('sshq','header',-1,-1);
+        include __DIR__.'/part_refresh.php';
+        
     }
     $subConf['colModel'] = App::getColModel($coll,'jgdheader' ,-1,9);
 }
 $subConf['urlp'] = url($param).'&prid=';
 
+include  __DIR__.'/part_group.php';
 include  __DIR__.'/part_grid.php';

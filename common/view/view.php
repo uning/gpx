@@ -39,8 +39,10 @@ if($coll == 'zjgf'){
         //$limit = 50000;
     }
     $prid = $this->getParam('prid');
-    if($prid)
+    if($prid){
         $cond['istotal'] = 0;
+        $cond['date'] = substr($prid,0,8);
+    }
     
 }
 

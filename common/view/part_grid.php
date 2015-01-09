@@ -8,8 +8,9 @@ echo 'var csubConf= '.json_encode((object)$subConf,JSON_PRETTY_PRINT|JSON_UNESCA
 var jqconf  = jqconf || {}; //for debug
 var dbe = null;
 var grido = null;
+var View = null;
 require(['view'],function(v){
     v.show(cjqconf,csubConf);
+    View = v;
 })
 </script>
-

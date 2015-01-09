@@ -13,7 +13,7 @@
         $group = -1;
         foreach($groups as $k=>$v){
         $sel = 'ui-state-default';
-        foreach($gps as $kk=>$vv){
+        foreach((array)$gps as $kk=>$vv){
         //$bbb = $vv == $k;//bug php '0' == 'date' is true
         //echo " {$bbb} [$k] [$vv]\n";#print_r($gps);
         if($vv === $k){

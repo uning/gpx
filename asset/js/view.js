@@ -1,10 +1,174 @@
 define(
        [
            'jquery.jqGrid',
-           'log',
        ],
        function(){
+           var roundf = function(num,len){
+               if(typeof(num)!= 'number')
+                   return num;
+               len = len || 3;
+               var ra = 1 ;
+               for(var i = 0;i < len ; ++i){
+                   ra *= 10;
+               }
+               return Math.round(num*ra)/ra;
+           };
+           var setCell=function(row,col,v,color){
+               var css = '';
+               color = color || 0;
+               if(color>0)
+                   css = 'cellred';
+               else if(color < 0)
+                   css = 'cellgreen';
+               v = roundf(v);
+               grido.setCell(row,col,v,css);
+               $('#grid_sshq').setCell(row,col,v,css);
+               
+           };
+           //private
+       var _zqdm2sc={
+           '112155':'sz',
+           '113001':'sh',
+           '150182':'sz',
+           '122083':'sh',
+       };
+       var getSZSH = function(v){//获取是那个市场的代码
+           var fn = v[0];
+           if(fn == '6' || fn == 5)
+               return 'sh';
+           if(fn == '0' || fn == '3' )
+               return 'sz';
+           if(_zqdm2sc[v])
+               return _zqdm2sc[v];
+           console.log(v,'不能识别是sh.sz def sh');
+           return 'sh';
+       };
+       var getXueqiuLink=function(v){
+           return 'http://xueqiu.com/S/'+getSZSH(v)+v;
+       };
+
+       var _zqdm2ids = {};
+
+
    return {
+       zqLastRefreshTimes:{},
+       refreshHq:function(){
+           var now = new Date().getTime();
+           var strZqs = this.getHqIdsStr();
+           var url = 'hqjsProxy.php?list=' + strZqs;
+           var zqdm,rowid,zqsl,qse;
+           var idxzqsl  =  this.getCollProp('证券数量','label');
+           var idxzxsz  =  this.getCollProp('最新市值','label');
+           var idxqse  =  this.getCollProp('清算额','label');
+           var  zqLastRefreshTimes = this.zqLastRefreshTimes;
+           $.getJSON(url,function(data,status){
+               //console.log(status,url);
+               if(status == 'success'){
+                   var sshgrid = $('#grid_sshq');
+                   if(sshgrid.attr('role') != 'presentation'){
+                       sshgrid.jqGrid({
+                           caption:'实时行情',
+                           datatype:'local',
+                           height:'auto',
+                           colModel:cjqconf.sshqColModel,
+                           ondblClickRow:function(rowid, iRow, iCol, e){
+                               var zqdm = rowid.substr(0,6);
+                               var url = getXueqiuLink(zqdm);
+                               window.open(url,zqdm);
+                               console.log('sshq ondblClickRow: on ',rowid,iRow, iCol,url);//, colconf);
+                           },
+                           
+                       });
+                   }
+                   //sshgrid.remove();
+
+
+                   $.each(data,function(k,v){
+                       
+                       zqdm = v['zqdm'];
+                       rowid = _zqdm2ids[zqdm];
+                       if(rowid == undefined){
+                           console.log(zqdm,'notfind');
+                           return;
+                       }
+                       if(zqLastRefreshTimes[zqdm] == v['31']){
+                           //console.log(zqdm,zqLastRefreshTimes[zqdm],'refresh time not mod');
+                           return;
+                       }
+                       zqLastRefreshTimes[zqdm] =  v['31'];
+                       
+                       qse = parseFloat(grido.getCell(rowid,idxqse));
+                       zqsl = parseFloat(grido.getCell(rowid,idxzqsl));
+                       var czxsz = parseFloat(grido.getCell(rowid,idxzxsz));
+
+                       var jrzf = parseFloat(v['1']);//开盘
+                       var zrsp = parseFloat(v['2']);//昨日收盘
+                       var dqjg = parseFloat(v['3']);//实时价格
+                       var sszf = (dqjg -zrsp)*100/zrsp;
+                       var zxsz = zqsl* dqjg;
+                       var ssyk = qse + zxsz;
+
+                       v._id = rowid;
+                       v.zqsl = zqsl;
+                       v.qse  = qse;
+                       var ov  = sshgrid.getRowData(rowid);
+                       //console.log(rowid,ov._id,ov.zqdm);
+                       if(ov.zqdm == zqdm){
+                           sshgrid.setRowData(rowid,v);
+                       }else{
+                           sshgrid.addRowData(rowid,v);
+                       }
+                       var jryk = (dqjg - zrsp)*zqsl;
+                       //*
+                       setCell(rowid,'ssjg',dqjg,dqjg - zrsp);//实时价格
+                       setCell(rowid,'sszf',sszf,sszf);//涨幅
+                       setCell(rowid,'ssyk',ssyk,ssyk);
+                       setCell(rowid,'jryk',jryk,jryk);//今日盈亏
+                       setCell(rowid,'zxsz',zxsz);
+                      /* 
+                       v.ssjg = roundf(dqjg);
+                       v.sszf = roundf(sszf);
+                       v.ssyk = roundf(ssyk);
+                       v.zqsl = roundf(zqsl);
+                       v.jryk = roundf(jryk);
+                       */
+
+                       //console.log(idxzxsz,zxsz,czxsz,rowid,zqdm,qse,zqsl,v);
+                   });
+               }
+           });
+       },
+       //获取第几行
+       getCollProp:function(val,fkey,key){
+           var ret = null;
+           fkey = fkey || 'label';
+           key = key || 'collidx';
+           grido.getGridParam('colModel').forEach(function(v){
+               if(v[fkey] == val){
+                   ret = v[key];
+               }
+           });
+           return ret;
+       },
+       //获取行情ids
+       getHqIdsStr:function(){
+           var collidx = this.getCollProp('证券代码','label');
+           var str = '';
+           if(collidx){
+               var dids = grido.getCol(collidx);
+               var rowids = grido.getCol('_id');
+               var appeared = {};
+               dids.forEach(function(v,k){
+                   if(appeared[v])
+                       return;
+                   appeared[v] = true;
+                   str += getSZSH(v) + v + ',';
+                   _zqdm2ids[v] = rowids[k];
+               });
+           }
+           return str;
+       },
+
        show:function(cjqconf,csubConf){
            // searchopt de
            var _opopt = ['bw','eq','ge','le'];
@@ -395,9 +559,40 @@ define(
 
            var gstr = getSelStr();
            $('#chgrpbtn>div,#chngroup').html('Group by:'+groupsText);
+
+           this.initPageRefresh();
+       },
+       initPageRefresh:function(){
+           var timer = null;
+           var chau = $('#check-autorefresh'); //.is(':checked');
+           var au = $('#autorefresh'); //.is(':checked');
+           var v = this;
+           var refresh = function(){
+               v.refreshHq();
+               var now = new Date();
+               $('#autorefresh-lasttime').html(now.toString());
+           };
+
+           var change = function(){
+               var checked = chau.is(':checked');;
+               var gap = au.val();
+               if(checked){
+                   clearInterval(timer);
+                   timer = setInterval(refresh,gap * 1000);
+                   refresh();
+                   console.log('refreshHq on',gap);
+               }else{
+                   clearInterval(timer);
+                   timer =null;
+                   console.log('refreshHq off',gap);
+               }
+           }
+           au.change(change);
+           chau.change(change);
+           //change();
        }
    };
-       });
+});
 
 
 

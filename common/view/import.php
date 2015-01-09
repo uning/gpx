@@ -62,14 +62,15 @@ function clipbordExcelImport($content,&$coll,&$myerrorno){
             if($mc->findOne($cond)){//
                 $findi += 1;
             }else{
-                $i += 1;
+                $ni += 1;
             }
+            $i += 1;
             App::normalTodb($row,$collconf['numfields']);
             $row['_fnorder'] = $i;
             $mc->findAndModify($cond,array('$set'=>$row),array(),array('upsert'=>true));
         }
     }
-    $error .=  "\n $counterror improt [$i] new records, [$findi] old records [$coll]\n";
+    $error .=  "\n $counterror improt [$ni] new records, [$findi] old records [$coll]\n";
     return $error;
 }
 

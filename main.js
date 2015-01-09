@@ -1,5 +1,6 @@
 require.config({
     paths: {
+        gridSSHQ:'asset/js/gridSSHQ.conf',
         bootstrap: 'bower_components/bootstrap/dist/js/bootstrap',
         'grid.locale-en': 'bower_components/jqgrid/js/i18n/grid.locale-en',
         'jquery.jqGrid': 'bower_components/jqgrid/js/jquery.jqGrid',
@@ -65,4 +66,9 @@ require.config({
     ]
 });
 
+requirejs(['jquery-ui',],function(){
+    $(function(){
+        $(document).tooltip();
+    });
+});
 

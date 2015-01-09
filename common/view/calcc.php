@@ -140,7 +140,8 @@ function saveDayN($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
                 $mon->save($v);
             }else{
                 $id = $v['_id'] = $k.'_zero';
-                $mon->save($v);
+                $mon->findAndModify(array('_id'=>$id),array('$set'=>$v));
+                //$mon->save($v);
             }
         }
     }
@@ -171,55 +172,17 @@ function saveDayN($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     $tr['_id']  = $pretid;
     $tr['istotal'] = 1;
 
-    $mon->save($tr);
+    //$mon->save($tr);
 
-    $info .= "$prejgrq\n清算 [{$tr[8]}]   可用 [$kyye] okyye[$okyye]\n";
-    $info .= "市值o [$otzxsz]   累计 [$tzxsz]\n";
+    $info .= "$prejgrq\n清算[{$tr[8]}]   可用 [$kyye] okyye[$okyye]\n";
+    $info .= "市值o[$otzxsz]   累计 [$tzxsz]\n";
     $info .= "盈亏计算[{$tr['jsyk']}] 累计[$tfdyk]\n";
+
+    $tr['_info'] = $info;
+    $mon->findAndModify(array('_id'=>$pretid),array('$set'=>$tr));
     echo "\n\n======\n$info";
 }
 
-
-function saveDay($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
-    $tzxsz = 0 ;
-    $tfdyk = 0;
-    foreach($zqrs as $k=>$v){
-        $v['istotal'] = 0;
-        $zqnum = $v[6]; //证券数量
-        $zxsz = 0;
-        $fdyk = 0;
-        $zqs = $v[8];//最终清算额度
-        if($zqnum > 0){ //有的持仓
-            $price = $v[4];//当前价格
-            $zxsz = $zqnum * $v[4];
-            $v['zxsz'] = $zxsz;
-        }elseif($zqnum < 0){//融券卖出的情况
-            //暂时不处理
-            //$zxsz = $zqs;
-        }else{
-            $zxsz = 0;
-            $v[6] = 0;//设置为0，为显示
-        }
-
-        //方便一次算比例
-        $tfdyk += $zxsz + $zqs;
-        $tzxsz += $zxsz;
-
-        if($v['ldate'] == $prejgrq || $zqnum  != 0){
-            $v['date'] = $prejgrq;
-            $id = $v['_id'] = $k.'_'.$prejgrq;
-            $mon->save($v);
-        }
-    }
-    $pretid = "total_$prejgrq";
-    $tr = &$totalr;
-    $tr['date'] = $prejgrq;
-    $tr['zxsz'] = $tzxsz;//市值
-    $tr['ljyk'] = $tfdyk;
-    $tr['_id']  = $pretid;
-    $tr['istotal'] = 1;
-    $mon->save($tr);
-}
 
 
 $zh2gu = array(
@@ -227,9 +190,7 @@ $zh2gu = array(
     '113001'=>'601988',
 );
 $sg2gu = array();
-//$totalrs = array();
-$prejgrq = null;
-//$zqrs  = array();
+$prejgrq = '';
 
 //证券公司记录错误
 $yefixed['20140819-245743.08-600704'] = 3;
@@ -365,6 +326,8 @@ while($row = $c->getNext()){
     $fixed += $yefixed[$fkk];
     $syje = $r9 + $rrsyje  +$fixed; //剩余金额
     $diff1 = abs(round($qse - $syje));
+
+
     if($diff1 > 1){
         $syje = $presyje + $r9 + $fixed;
         $diff2 = abs(round($qse - $syje));
@@ -372,7 +335,7 @@ while($row = $c->getNext()){
             if(($r9 == 0 && $row[8] == 0)||$ywmc == '指定交易'){
                 continue;
             }
-            echo "$fkk [$ywmc] [$qse]!=[$syje] = [$presyje] or [$rrsyje]  + [$r9] [$diff1] [$diff2] [$fixed]\n";
+            echo "$fkk [$ywmc] qse[$qse]!=syje[$syje] = presyje[$presyje] or rrsyje[$rrsyje]  + r9[$r9] diff1[$diff1] diff2[$diff2] fixed[$fixed]\n";
             print_r($row);
             break;
         }else{
@@ -382,11 +345,15 @@ while($row = $c->getNext()){
     }else{
         $presyje = $r9;
         #echo "$jgrq [$ywmc] ] [$qse]==[$syje]  [$rrsyje] = [$r9]\n";
+        #echo "$fkk [{$row[3]}] [$ywmc] [$qse]==[$syje] = [$presyje] or [$rrsyje]  + [$r9] [$diff1] [$diff2] [$fixed]\n";
     }
 }
 echo "清算额:[$qse] ==  [$syje] = [{$row[9]}]  [$rrsyje] [$presyje]\n";
 
 
+if(!$jgrq){
+    $prejgrq = $jgrq = $datestr;
+}
 //*
 saveDayN($jgrq,$mon,$totalr,$zqrs);
 
