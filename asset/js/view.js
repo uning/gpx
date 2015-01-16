@@ -23,7 +23,6 @@ define(
                v = roundf(v);
                grido.setCell(row,col,v,css);
                $('#grid_sshq').setCell(row,col,v,css);
-               
            };
            //private
        var _zqdm2sc={
@@ -114,6 +113,8 @@ define(
                        var ov  = sshgrid.getRowData(rowid);
                        //console.log(rowid,ov._id,ov.zqdm);
                        if(ov.zqdm == zqdm){
+
+                           sshgrid.s                                                                                                                                                                                                                                                                                                                                                                                                                     (rowid,v);
                            sshgrid.setRowData(rowid,v);
                        }else{
                            sshgrid.addRowData(rowid,v);
@@ -586,7 +587,7 @@ define(
                    timer =null;
                    console.log('refreshHq off',gap);
                }
-           }
+           };
            au.change(change);
            chau.change(change);
            //change();
