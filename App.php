@@ -18,12 +18,6 @@ $loader-> registerPrefixFallbacks(array(
     ,PUB_COMMAND
 ));
 
-/**
- * 入口文件
- * 最后合并到app.inc里去 
- *
- *  
- */
 
 class App extends PL_Application{
     static  $dataconf ;
@@ -36,8 +30,6 @@ class App extends PL_Application{
         PL_Session::$randsid = true;
         $app->mshare('session',
             function () use($app){
-                //$u = $app->vget('uid');
-                //$sec = $app->vget('sec');
                 return PL_Session::start();
 
             });
@@ -58,8 +50,17 @@ class App extends PL_Application{
 
 
 
+
+    const IDX_MAX = 99;
+
+    /**
+     * 加表头
+     *
+     * pos < 0 时不加
+     * date 日期，id 对应表格的key和数据库_id字段
+     */
     static function checkAddCol($i,&$cols,&$datePos,&$bzPos,&$idPos){
-        $max = 99;
+        $max = self::IDX_MAX;
         if($i == $idPos || ($idPos >= 0 && $i > $max)){
             $cols[] = array('name'=>'_id','key'=>true,'hidden'=>true);
             $idPos = -1;
@@ -75,7 +76,6 @@ class App extends PL_Application{
     }
     /**
      * pos 为负时，不显示该collumn
-     * 注意别重合
      */
     static function getColModel($coll
         ,$sheader='header'
@@ -83,7 +83,6 @@ class App extends PL_Application{
         ,$bzPos = 5
         ,$idPos = 0
     ){
-            
         $dconf = &static::$dataconf[$coll];
         $colMap = $dconf['colModel'];
         $colModel = array();
@@ -120,7 +119,10 @@ class App extends PL_Application{
                 $i += 1;
             }
         }
-        static::checkAddCol(100,$colModel,$datePos,$bzPos,$idPos);
+
+
+
+        static::checkAddCol(self::IDX_MAX,$colModel,$datePos,$bzPos,$idPos);
         return $colModel;
     }
 
@@ -135,6 +137,8 @@ class App extends PL_Application{
             $row[$k] += 0;
         }
     }
+
+
     //////////////////////////////////////////////////////////////////////
     //PARA: Date Should In YYYY-MM-DD Format
     //RESULT FORMAT:
@@ -154,6 +158,35 @@ class App extends PL_Application{
         $datetime2 = date_create($date_2);
         $interval = date_diff($datetime1, $datetime2);
         return $interval->format($differenceFormat);
+    }
+
+
+
+    static $_zqdm2pre = array(
+           '112155'=>'sz',
+           '113001'=>'sh',
+           '150182'=>'sz',
+           '122083'=>'sh',
+           '131810'=>'sz',
+    );
+    /**
+     * 获取代码前缀
+     */
+    static function zqdmPre($v){
+        $first = substr($v,0,1);
+        if($first == '6' || $first == '5'){
+          return 'sh';
+        }elseif($first === '0' || $first == '3'){
+            return 'sz';
+        }else{
+            $sub3 = substr($v,0,3);
+            if($sub3 == '131')
+                return 'sz';
+            else if($sub3 == '204')
+                return 'sh';
+
+            return self::$_zqdm2pre[$v];
+        }
     }
 };
 

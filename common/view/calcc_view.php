@@ -20,7 +20,8 @@ if($doq){
         $limit = 10000;
         $skip = 0;
         $sort =array(0=>-1,16=>-1);//交易倒序
-        $cond = array(2=>$zqdm);
+        $zqdm1 = '734'.substr($zqdm,3);
+        $cond =array('$or'=>array( array(2=>$zqdm),array(2=>$zqdm1)));
         $ccdate = $parr[1];
         $ccdate = $rowdata['date'];
         $c = $mon->findByIndex('jgd',(object)$cond,$limit,$skip,array(),(object)$sort,true);

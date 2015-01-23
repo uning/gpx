@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__.'/../../base.php';
-const PSPACE = 'calccp';
 //todo: 优化存储结构,没有改变的不再每天存储
 //根据原始记录能计算的,放到显示处,不在这里计算
 //
@@ -161,7 +160,6 @@ function saveDayN($prejgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     }
 
     $tr['kyye'] = $kyye;
-
     $tr['zc'] = $tr['zxsz'] + $kyye;//资产
     $touru = $tr['yinhangzr'] + $tr['yinhangzc'];
     $tr['yinhangtr'] = $touru;
@@ -337,6 +335,7 @@ while($row = $c->getNext()){
             }
             echo "$fkk [$ywmc] qse[$qse]!=syje[$syje] = presyje[$presyje] or rrsyje[$rrsyje]  + r9[$r9] diff1[$diff1] diff2[$diff2] fixed[$fixed]\n";
             print_r($row);
+            return;
             break;
         }else{
             #echo "$jgrq [$ywmc] [$qse]==[$syje] = [$presyje]  + [$r9] rr\n";
@@ -353,6 +352,7 @@ echo "清算额:[$qse] ==  [$syje] = [{$row[9]}]  [$rrsyje] [$presyje]\n";
 
 if(!$jgrq){
     $prejgrq = $jgrq = $datestr;
+    echo "没有交割记录\n";return;
 }
 //*
 saveDayN($jgrq,$mon,$totalr,$zqrs);

@@ -33,7 +33,7 @@ define(
        };
        var getSZSH = function(v){//获取是那个市场的代码
            var fn = v[0];
-           if(fn == '6' || fn == 5)
+           if(fn == '6' || fn == '5')
                return 'sh';
            if(fn == '0' || fn == '3' )
                return 'sz';
@@ -113,8 +113,6 @@ define(
                        var ov  = sshgrid.getRowData(rowid);
                        //console.log(rowid,ov._id,ov.zqdm);
                        if(ov.zqdm == zqdm){
-
-                           sshgrid.s                                                                                                                                                                                                                                                                                                                                                                                                                     (rowid,v);
                            sshgrid.setRowData(rowid,v);
                        }else{
                            sshgrid.addRowData(rowid,v);

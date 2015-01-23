@@ -2,9 +2,11 @@
 $leftmenu = array(
     array('id'=>'chich','cntext'=>'持仓','pid'=>'root','nurl'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
     array('id'=>'chich_zuixin','cntext'=>'最新持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
-    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'calcc','lastest'=>'lastest'))),
+//    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'jgdc'))),
     array('id'=>'chich_zuixin','cntext'=>'持仓汇总','pid'=>'chich','url'=>url(array('action'=>'view','header'=>'theader','coll'=>'calcc'))),
-    array('id'=>'chich_jisuan','cntext'=>'计算最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'calcc','coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'chich_jisuan','cntext'=>'计算持仓','pid'=>'chich','url'=>url(array('action'=>'calcc','coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'hg_huoqu','cntext'=>'获取股票价格','pid'=>'chich','url'=>url(array('action'=>'gethq','coll'=>'calcc','lastest'=>'lastest'))),
     array('id'=>'zjgf_chich','cntext'=>'券商合并持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader','psidx'=>'date desc') )),
     array('id'=>'zjgf_chichmx','cntext'=>'券商持仓明细','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header') )),
 
@@ -98,7 +100,6 @@ $leftmenu = array(
         right: 30px;
         height: 30px;
         background-color: #85B5D9;
-
     }
     .right-pane-content{
         position: absolute;

@@ -104,5 +104,7 @@ class IndexServer  extends PL_Server_Page{
         $limit = static::getParam('rows',20);
         $page = static::getParam('page',0);
         $skip = $page < 1 ? 0 : ($page - 1)*$limit;
+
     }
+
 }

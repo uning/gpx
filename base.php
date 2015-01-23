@@ -31,6 +31,8 @@ define('PUB_COMMAND',COMM_ROOT.'/command');
 define('TM','Ymd');
 define('P_URLP','asset/common');
 
+const PSPACE = 'calccp';
+
 require_once __DIR__.'/App.php';
 
 //记录脚本执行时间

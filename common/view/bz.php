@@ -1,7 +1,6 @@
 <?php
 //add comment
 $prid = $this->getParam('prid');
-$prid = $this->getParam('prid');
 $content = $this->getParam('content');
 
 if($prid){

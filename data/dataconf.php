@@ -783,5 +783,44 @@ return array (
             '30' => '日期',
         )
     ),
+    'jgdc'=>array(
+        'sfields'=>array(2=>'text','3'=>'text','chtime'=>'text'),//搜索的字段
+        'groups' => 
+        array (
+            'date' => '日期',
+            '_forsum' => '求和',
+        ),
+        'sumops'=>array(
+            2 => 'count',
+            6 => 'sum',
+            'zxsz' => 'sum',
+            '8'=>'sum',
+            'fdyk' => 'sum',
+            'zcbl' => 'sum',
+        ),
+        'header'=>array(
+            2 => '证券代码',
+            3 => '证券名称',
+            6 => '证券数量',
+            '4' => '收盘价',
+            'pdate' => '价格日期',
+            'zxsz' => '市值',
+            '8'=>'清算额',
+            '_forsum'=>'求和',
+            
+            'ljmr' => '累计买入',
+            'fdyk' => '浮动盈亏',
+            'ykbl' => '盈亏比例(%)',
+            /*
+            'zcbl' => '占仓比例(%)',
+            'cdate' =>'开始建仓',
+            'chtime'=>'持仓天数',
+             */
+            'ldate'=>'最后操作',
+            10 => '佣金',
+            11 => '印花税',
+            12 => '过户费',
+        ),
+    ),
 
 );
