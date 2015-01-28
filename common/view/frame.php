@@ -54,8 +54,10 @@ $leftmenu = array(
 
 </script>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
-<link rel="stylesheet" href="asset/js/lib/panListMenu/listMenu.css" />
 <script type="text/javascript" src="asset/js/lib/panListMenu/listMenu.js"></script>
+
+<link rel="stylesheet" href="asset/js/lib/panListMenu/listMenu.css" />
+<link rel="icon" type="image/x-icon" href="asset/img/fav.ico">
 <style>
     body{
         font-family: 'Microsoft Yahei';
@@ -158,7 +160,7 @@ $leftmenu = array(
                 <iframe src="?action=view" frameborder="0"></iframe>
             </div>
             <div class="item-close" style=" ">
-                <img src="asset/close.png" alt="" style="width: 100%;height: 100%;" />
+                <img src="asset/img/close.png" alt="" style="width: 100%;height: 100%;" />
             </div>
         </div>
 
