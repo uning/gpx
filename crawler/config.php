@@ -1,14 +1,12 @@
 <?php
-define('CACHE_TIMEOUT',86400);
-define('CACHE_DIR',__DIR__.'/cache/');
 //简单抓取
-function url_content($url,$usecache = true){
+function url_content($url,$cacheout = 86400){
     $cachefile = CACHE_DIR.md5($url);
-    if($usecache){
+    if($cacheout != 0 ){
         if(file_exists($cachefile)){
             $mtime =  filemtime($cachefile);
             $now = time();
-            if($mtime > $now - CACHE_TIMEOUT){
+            if($mtime > $now - $cacheout || $cacheout < 0 ){
                 return file_get_contents($cachefile);
             }
         }

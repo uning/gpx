@@ -1,6 +1,92 @@
 <?php
-$page = 0;
-$reqUrl="http://xueqiu.com/stock/screener/screen.json?category=SH&exchange=&areacode=&indcode=&orderby=symbol&order=desc&current=0_179.01&pct=-5.35_10.06&page=1&nag.20140930=-3036.9272_35920.8918&teq.20140930=-311909.19_143237500&dy=0_11.6788&tr10=0_434.3826&chgpct=0_100&mc=0_14440.3551&ia.20140930=0_8399079.31&bps.20140930=-3.7_42.68&pelyr=0_5203713.2851&bncf.20140930=-4507000_46392700&upps.20140930=-11.363155_35.83057&tr20=0_612.8522&sgpr.20140930=-311.7158_100&pct5=-23.4302_61.1823&qr.20140930=-1709.385271_12376.217277&tweet7d=0_1138&nig.20140930=-20142.7051_84495.0729&fncf.20140930=-8283400_7880200&volavg30=0_35723.26&incf.20140930=-21690300_1257700&fa.20140930=28503.02_28503.02&evps=2.3996_466.6284&cnr.20140930=-13508300_35903200&pettm=0_348516.4686&ip.20140930=-103300_7644200&fe.20140930=-89307.97_1969300&nbe.20140930=-72610.06_419501.48&chgpct10=0_149.5389&follow7d=0_7938&mbig.20140930=-100_43520.1406&up.20140930=-1076130.13_70072000&upqg.20140930=-1754.175796_72802.14357&rec.20140930=0_12639859.5&volume=0_81598.41&cur.20140930=1.9_347242500&tr5=0_221.3664&fcb.20140930=-9727.78_150959800&tr1m=0_612.9572&epsweighted.20140930=-3.3_9.36&eq.20140930=-312182.82_142758100&tr=0_57.23&np.20140930=-541203.9_22046400&roeweighted.20140930=-292.77_351.29&ca.20140930=353.42_72638318.6&tag.20140930=-89.7689_129547.1031&roediluted.20140930=-26171.51_9404.27&tp.20140930=-501204_28823100&snpr.20140930=-85115.878009_4072.811234&amount=0_793595.76&pct10=-22.8471_159.552&bp.20140930=-567629.8_28750500&nca.20140930=0_192618100&deal=0_3835&pct20=-34.3047_572.3549&ta.20140930=353.42_2015095600&deal7d=0_61&tweet=8_80407&epsyg.20140930=-31994.993869_268090.195175&follow=11_148639&bi.20140930=0_211564800&bc.20140930=0_180372900&epsdiluted.20140930=-3.36_9.96&chgpct1m=0_630.4511&tbi.20140930=0_211564800&cps.20140930=-7.9551_10.1409&li.20140930=0_12764922&cs.20140930=-87257.82_13558800&tbc.20140930=26.04_204865900&epsqg.20140930=-20000.675607_59668.073446&pbt.20140930=-24994.32_55294800&eps.20140930=-3.3_9.36&cr.20140930=-1751.566939_352946.710408&tax.20140930=-33240.6_6737600&pb=0_6800&pct1m=-34.3047_640.6015&fmc=0_12775.6521&pc.20140930=4330.22_35151300&cl.20140930=-3312.78_61374500&chgpct5=0_75.7036&netprofit.20140930=-548609.2_22085500&chgpct20=0_562.4573&_=1415779769917";
+/**
+ * 获取雪球k线数据
+ *
+ */
+
+class Crawler_Xueqiu{
+
+
+    /**
+     *
+     * 获取股票日K线信息，从雪球
+     * 返回如下json php 数组,默认取一天的
+     *
+     * "volume":3.1658434E7,"open":26.03,"high":26.84,"close":26.36,"low":25.89,"chg":0.39,"percent":1.5,"turnrate":3.47,"ma5":25.96,"ma10":24.77,"ma20":24.2,"ma30":23.36,"dif":1.06,"dea":0.86,"macd":0.4,"time":"Mon Mar 23 00:00:00 +0800 2015"}
+     *
+     *
+     */
+    static function getDayK($symbol,$from_date,$to_date = '',$cacheout = -1){
+        //注意begin，end 是毫秒单位的
+        //xueqiu.com/stock/forchartk/stocklist.json?symbol=SZ002465&period=1day&type=before&begin=1427018383612&end=1427098383612
+        $ps = strtotime($from_date).'000';
+        if($to_date < $from_date){
+            $to_date = $from_date;
+        }
+        $pe = strtotime($to_date).'999';
+        $url = "http://xueqiu.com/stock/forchartk/stocklist.json?symbol=$symbol&period=1day&type=before&begin=$ps&end=$pe"; 
+        $cachefile = CACHE_DIR.md5($url);
+        if($cacheout != 0 ){
+            if(file_exists($cachefile)){
+                $mtime =  filemtime($cachefile);
+                $now = time();
+                if($mtime > $now - $cacheout || $cacheout < 0 ){
+                    $content =  file_get_contents($cachefile);
+                }
+            }
+        }
+        if(!$content){
+            $params = array(
+                'http' => array
+                (
+                    'method' => 'GET',
+                    'header'=>"Cache-Control: max-age=0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4"
+                    ."\r\nCookie: bid=c12aeb0acdf4693cc89242dcd4b8a194_i56c705c; xq_a_token=11fc56ef27618e0f3567eb1b234cabb95fb72ab7; xqat=11fc56ef27618e0f3567eb1b234cabb95fb72ab7; xq_r_token=5d388ea17009d80dda23e3aa2d222b0804c72da6; xq_token_expire=Fri%20Mar%2027%202015%2011%3A11%3A56%20GMT%2B0800%20(CST); xq_is_login=1; Hm_lvt_1db88642e346389874251b5a1eded6e3=1425277076,1425954400,1426728860; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1427093987; __utma=1.1639524974.1421822036.1427079995.1427083785.74; __utmc=1; __utmz=1.1423139411.32.2.utmcsr=192.168.1.1|utmccn=(referral)|utmcmd=referral|utmcct=/pop_html/protection_ans.html; snbim_minify=true\r\n",
+                    'user_agent'=>'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36',
+                )
+            );
+            $ctx = stream_context_create($params);
+            $fp = fopen($url, 'r', false, $ctx);
+            if($fp){
+                $content = stream_get_contents($fp);
+                //echo $content;
+                fclose($fp);
+            }else{
+                echo "http get failed:".$url."\n"; 
+            }
+        }
+        $arr = json_decode($content,true);
+        if($arr['success'] == true ){
+            file_put_contents($cachefile,$content);
+            return $arr['chartlist'];
+        }
+    }
+
+
+    static function getGupiaoDay($zqdm,$date){
+        $id = $zqdm."_$date";
+        $mc = DbConfig::getMongodb('dayklineinfo');
+        if($ret = $mc->findOne(array('_id'=>$id)))
+            return $ret;
+        $pre = App::zqdmPre($zqdm);
+        //
+        $todate = date('Ymd');
+        $kline = static::getDayK($pre.$zqdm,$date,$todate);
+        $ret = array();
+        if($kline){
+            foreach($kline as $info){
+                $day = date('Ymd',strtotime($info['time']));
+                $id = $zqdm."_$day";
+                $info['day'] = $day;
+                $info['zqdm'] = $zqdm;
+                if(!$ret)
+                    $ret = $info;
+                $mc->findAndModify(array('_id'=>$id),array('$set'=>$info),array(),array('upsert'=>true));
+            }
+        }
+        return $ret;
+    }
+}
 
 
 

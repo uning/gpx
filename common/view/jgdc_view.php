@@ -63,6 +63,7 @@ if($doq){
 }
 
 $jqconf['colModel'] = App::getColModel($coll,$sheader,-1,-1);
+$colModel = &$jqconf['colModel'];
 $jqconf['loadonce'] = true;
 $jqconf['rowNum'] = 50000;//
 $jqconf['grouping'] = true;
@@ -87,6 +88,17 @@ $subConf['colModel'] = App::getColModel('calcc','jgdheader' ,-1,9);
 
 $param['coll'] = 'calcc';
 $subConf['urlp'] = url($param).'&prid=';
+
+
+//*
+$colModel[] = array('name'=>'_forsum','label'=>'求和','width'=>20);
+$colModel[] = array('name'=>'ssjg','label'=>'实时价格','width'=>70,'sorttype'=>'number');
+$colModel[] = array('name'=>'sszf','label'=>'今日涨幅%','width'=>70,'sorttype'=>'number');
+$colModel[] = array('name'=>'ssyk','label'=>'实时总盈亏','width'=>70,'sorttype'=>'number');
+$colModel[] = array('name'=>'jryk','label'=>'今日盈亏','width'=>70,'sorttype'=>'number');
+ //*/
+$jqconf['sshqColModel'] = App::getColModel('sshq','header',-1,-1);
+include __DIR__.'/part_refresh.php';
 
 include __DIR__.'/part_group.php';
 include  __DIR__.'/part_grid.php';

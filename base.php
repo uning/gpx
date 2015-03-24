@@ -28,6 +28,7 @@ define('PUB_CONTROLLER',COMM_ROOT.'/api');
 define('PUB_MODEL',COMM_ROOT.'/mongo/model/');
 define('PUB_SERVER',COMM_ROOT.'/server');
 define('PUB_COMMAND',COMM_ROOT.'/command');
+define('CACHE_DIR',__DIR__.'/data/cache/');
 define('TM','Ymd');
 define('P_URLP','asset/common');
 

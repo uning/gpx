@@ -797,6 +797,9 @@ return array (
             '8'=>'sum',
             'fdyk' => 'sum',
             'zcbl' => 'sum',
+            10 => 'sum',
+            11 => 'sum',
+            12 => 'sum',
         ),
         'header'=>array(
             2 => '证券代码',

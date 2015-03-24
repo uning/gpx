@@ -29,8 +29,8 @@ foreach($lines as $l){
     $bl = $arr[1];
     $row = explode(',',$bl);
     $row['zqdm'] = $zqdm;
-    if($row[3]){
-        $ssjq[$zqdm] = $row[3]; 
+    if($row[2]){
+        $ssjq[$zqdm] = $row[2]; 
     }
 }
 DbConfig::saveParam('sshq',$ssjq,PSPACE);

@@ -8,7 +8,8 @@ require PL_ROOT.'/bootstrap.php';
 $loader = PL_ApcClassLoader::getInstance();
 $loader->enableApc(false);
 $loader->registerPrefixes(array(
-    'model_' => __DIR__.'/common/'
+    'model_' => __DIR__.'/common/',
+    'Crawler_'=>__DIR__,
 ));
 
 
@@ -168,6 +169,7 @@ class App extends PL_Application{
            '150182'=>'sz',
            '122083'=>'sh',
            '131810'=>'sz',
+           '128002'=>'sz',
     );
     /**
      * 获取代码前缀
