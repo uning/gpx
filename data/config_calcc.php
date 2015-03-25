@@ -157,14 +157,16 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     }
          */
 
+    $tr['rzye'] = round($tr['rzye'],3);
+    $tr['rqye'] = round($tr['rqye'],3);
     $tr['kyye'] = $kyye;
     $tr['zc'] = $tr['zxsz'] + $kyye;//资产
     $touru = $tr['yinhangzr'] + $tr['yinhangzc'];
     $tr['yinhangtr'] = $touru;
     $tr['jsyk'] = $tr['zc'] - $touru - $tr['rzye'];//盈亏
     $tr['ljyk'] = $tfdyk;
-    $tr['ykbl'] = round(($tr['jsyk'] -$tr['rzye'])*100/$touru,3); //没有处理融券余额
-    $tr['cw'] = round($tr['zxsz']*100/$touru,3);
+    $tr['ykbl'] = round(($tr['jsyk'])*100/$touru,3); //没有处理融券余额
+    $tr['cw'] = round($tr['zxsz']*100/($tr['zc'] - $tr['rzye']),3);
     $tr['_id']  = $pretid;
     $tr['istotal'] = 1;
 
@@ -172,7 +174,7 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
 
     $info = '';
     $info .= "$jgrq\n清算[{$tr[8]}]   可用 [$kyye] okyye[$okyye]\n";
-    $info .= "融资余额 [{$tr['rzye']}]  融券余额[{$tr['rqye']}]\n";
+    $info .= "融资余额 [{$tr['rzye']}]  融券卖出量[{$tr['rqye']}]\n";
     $info .= "市值o[$otzxsz]   累计 [$tzxsz]\n";
     $info .= "盈亏计算[{$tr['jsyk']}] 累计[$tfdyk]\n";
 
@@ -257,15 +259,20 @@ while($row = $c->getNext()){
         }
     }
 
-    
-    if($ywmc == '融资借入'){
-        $totalr['rzye'] += $row[8];
-    }
-    if($ywmc == '融券卖出'){
-        $totalr['rqye'] += $row[8];
-    }
 
     switch($ywmc){
+    case '还券划出':
+        $totalr['rqye'] -= $row[5];
+        break;
+    case '买券还券':
+        $totalr['rqye'] -= $row[5];
+        $zqr[6] += $row[5];   //剩余数量
+        break;
+    case '融券卖出':
+        $zqr[6] -= $row[5];   //剩余数量
+        $totalr['rqye'] += $row[5];
+        break;
+
     case '证券买入':
     case '申购中签':
     case '融券回购':
@@ -273,24 +280,14 @@ while($row = $c->getNext()){
     case '担保品买入':
     case '红股入账':
     case '转股入帐':
-    case '买券还券':
     case '新股申购'://不计算申购新股，盈亏可用不准
         $zqr[6] += $row[5];   //剩余数量
         $zqr['ljmr'] -= $row[8];//累计买入多少钱
         break;
-    /*
-    case '买券还券':
-        print_r($zqr);
-        $zqr[6] += $row[5];   //剩余数量
-        print_r($zqr);
-        $is_exit = 1;
-        break;
-    //*/
     case '证券卖出':
     case '担保品卖出':
     case '融券购回':
     case '卖券还款':
-    case '融券卖出':
     case '申购还款':
         $zqr[6] -= $row[5];   //剩余数量
         break;
@@ -321,14 +318,19 @@ while($row = $c->getNext()){
         $totalr['yinhangzc'] += $row[8];
         break;
     case '融资借入':
+        $totalr['rzye'] += $row[8];
         $totalr['rongzijr'] += $row[8];
         break;
     case '偿还融资负债本金':
+        $totalr['rzye'] += $row[8];
         $totalr['rongzich'] += $row[8];
         break;
     case '偿还融资利息':
         //$totalr['rongzich'] += $row[8];
         $totalr['rongzilx'] += $row[8];
+        break;
+    case '偿还融券费用':
+        $totalr['rongquanlx'] += $row[8];
         break;
     default:
     }
@@ -356,15 +358,15 @@ while($row = $c->getNext()){
     $syje = $r9 + $rrsyje  +$fixed; //剩余金额
     $diff1 = abs(round($qse - $syje));
 
-
+    $syje = $presyje + $r9 + $fixed;
+    $diff2 = abs(round($qse - $syje));
+    //echo "$fkk [{$row['3']}][$ywmc] qse[$qse]!=syje[$syje] = presyje[$presyje] or rrsyje[$rrsyje]  + r9[$r9] diff1[$diff1] diff2[$diff2] fixed[$fixed]\n";
     if($diff1 > 1){
-        $syje = $presyje + $r9 + $fixed;
-        $diff2 = abs(round($qse - $syje));
         if($diff2 > 1){
             if(($r9 == 0 && $row[8] == 0)||$ywmc == '指定交易'){
                 continue;
             }
-            echo "$fkk [$ywmc] qse[$qse]!=syje[$syje] = presyje[$presyje] or rrsyje[$rrsyje]  + r9[$r9] diff1[$diff1] diff2[$diff2] fixed[$fixed]\n";
+            echo "!!!notequal $fkk [$ywmc] qse[$qse]!=syje[$syje] = presyje[$presyje] or rrsyje[$rrsyje]  + r9[$r9] diff1[$diff1] diff2[$diff2] fixed[$fixed]\n";
             print_r($row);
             return;
             break;
@@ -374,8 +376,6 @@ while($row = $c->getNext()){
         }
     }else{
         $presyje = $r9;
-        #echo "$jgrq [$ywmc] ] [$qse]==[$syje]  [$rrsyje] = [$r9]\n";
-        #echo "$fkk [{$row[3]}] [$ywmc] [$qse]==[$syje] = [$presyje] or [$rrsyje]  + [$r9] [$diff1] [$diff2] [$fixed]\n";
     }
 
 
@@ -403,5 +403,5 @@ $hisdata = array(
     'totalr'=>$totalr,
 );
 DbConfig::saveParam($hisdata,'',PSPACE);
-echo json_encode($hisdata,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
+#echo json_encode($hisdata,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);
 //   */
