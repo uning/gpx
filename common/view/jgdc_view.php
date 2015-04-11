@@ -7,10 +7,11 @@ $sheader = $this->getParam('header','header');
 if($doq){
     $zqrs = DbConfig::getParam('zqrs',PSPACE);
     $sshq = DbConfig::getParam('sshq',PSPACE);
+    $totalr = DbConfig::getParam('totalr',PSPACE);
     $i = 0;
     foreach($zqrs as $k=>$row){
         if($row[8] == 0 && $row[6] == 0){
-            continue;//清算额为0
+            continue;//清算额为0,数量也为0
         }
         $row['_id'] = $k;
         $row['_forsum'] = 'sum';
@@ -32,7 +33,7 @@ if($doq){
         $rows[]= $row;
         $numarr[] = $row[6];
 
-        $userData['zxsz'] +=  $zxsz;
+        $tzxsz +=  $zxsz;
         $userData['8'] +=  $row['8'];
         $userData['fdyk'] +=  $row['fdyk'];
     }
@@ -41,9 +42,13 @@ if($doq){
     $str = '总计<br>';
     $dconf = App::getDataconf('jgdc');
     $header = $dconf['header'];
+    $userData['zxsz'] = $tzxsz;
     foreach($userData as $k=>$v){
-        $str.= $header[$k].':'.$v.',';
+        $str.= $header[$k].':'.$v.',<br/>';
     }
+    $str.="可用余额:".$totalr['kyye'].',<br/>';
+    //$str.="融资余额:".$totalr['rzye'].',<br/>';
+    //$str.="融券余额:".$totalr['rqye'].',<br/>';
     $userData['2'] = $str;
     $records = $i;
     echo json_encode(array(
