@@ -39,7 +39,7 @@ require.config({
         'jquery-ui': {
             deps: [
                 'jquery',
-                'css!bower_components/jquery-ui/jquery-ui.css'
+                'css!bower_components/jquery-ui/themes/redmond/jquery-ui.css'
             ]
         },
         'ui.multiselect': {

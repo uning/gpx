@@ -6,6 +6,8 @@
 
 class Crawler_Xueqiu{
 
+    //获取登陆后的雪球cookie
+    const COOKIES='Cookie: xq_a_token=ded657d12d5f42cbf06142b4b611dca7792f6d0f; xqat=ded657d12d5f42cbf06142b4b611dca7792f6d0f; xq_r_token=6b2413cac9c989c53db3788db47eeba3c63e7e28; xq_token_expire=Fri%20May%2029%202015%2009%3A12%3A33%20GMT%2B0800%20(CST); xq_is_login=1; bid=c12aeb0acdf4693cc89242dcd4b8a194_i99704rx; snbim_minify=false; __utma=1.1280967048.1430527005.1430702000.1430788969.6; __utmb=1.36.9.1430795490450; __utmc=1; __utmz=1.1430527005.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Hm_lvt_1db88642e346389874251b5a1eded6e3=1428840796,1429577930,1430451578,1430701852; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1430797478';
 
     /**
      *
@@ -41,7 +43,7 @@ class Crawler_Xueqiu{
                 (
                     'method' => 'GET',
                     'header'=>"Cache-Control: max-age=0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4"
-                    ."\r\nCookie: bid=c12aeb0acdf4693cc89242dcd4b8a194_i56c705c; xq_a_token=11fc56ef27618e0f3567eb1b234cabb95fb72ab7; xqat=11fc56ef27618e0f3567eb1b234cabb95fb72ab7; xq_r_token=5d388ea17009d80dda23e3aa2d222b0804c72da6; xq_token_expire=Fri%20Mar%2027%202015%2011%3A11%3A56%20GMT%2B0800%20(CST); xq_is_login=1; Hm_lvt_1db88642e346389874251b5a1eded6e3=1425277076,1425954400,1426728860; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1427093987; __utma=1.1639524974.1421822036.1427079995.1427083785.74; __utmc=1; __utmz=1.1423139411.32.2.utmcsr=192.168.1.1|utmccn=(referral)|utmcmd=referral|utmcct=/pop_html/protection_ans.html; snbim_minify=true\r\n",
+                    ."\r\n".self::COOKIES."\r\n",
                     'user_agent'=>'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36',
                 )
             );

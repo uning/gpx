@@ -3,7 +3,7 @@ class IndexServer  extends PL_Server_Page{
 	
 	public function __construct(){
 		$this->viewRoot = ROOT.'/common/view';
-        require(__DIR__.'/common/view/table.php');
+        //require(__DIR__.'/common/view/table.php');
         //PL_Session::start();
     }
 
