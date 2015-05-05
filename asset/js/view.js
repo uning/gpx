@@ -173,7 +173,8 @@ define(
            var _opopt = ['bw','eq','ge','le'];
            var _searchopt = {sopt:['eq','ge','le']};
            var _txtsearchopt = {sopt:['bw']};
-           //wrap param grid,collInd( for name is number,confused the api) to Datainit
+          
+           //search util funcs
            var _dataInitColldata = function(grid,collInd){
                return function(element){
                    $(element).autocomplete({
@@ -256,7 +257,8 @@ define(
                    opts.pager = pager_id;
                    var rowdata = grido.getRowData(row_id);
                    opts.url = opts.urlp + row_id + '&rowdata='+JSON.stringify(rowdata);
-                   opts.editurl = opts.urlp + row_id;
+                   //opts.editurl = opts.urlp + row_id;
+                   opts.editurl = opts.url;
                    var bzs,i,bzo;
                    var sgo = jQuery("#"+subgrid_table_id);
 
@@ -288,6 +290,7 @@ define(
            };
 
 
+           //查询交割单可以评论
            if(csubConf && csubConf.subGrid){
                //console.log('before sub extend',subConf);
                var newaa = $.extend(true,{},subConf);   
@@ -297,6 +300,9 @@ define(
            }
 
            $.extend(true,subConf,csubConf || {});
+
+           console.log('subConf',subConf);
+           console.log('csubConf',csubConf);
 
            jqconf ={
                url:qurl,
@@ -360,7 +366,7 @@ define(
                    openicon: "ui-icon-arrowreturn-1-e",
                    // load the subgrid data only once
                    // and the just show/hide
-                   reloadOnExpand: false,
+                   reloadOnExpand: true,
                    // select the row when the expand column is clicked
                    selectOnExpand : true
                },
@@ -399,11 +405,16 @@ define(
                if(v.name == 'bz'){
                    v.formatter = formatterBz;
                }
+               if(v.name == 'content'){
+                   v.edittype = 'textarea';
+               }
+               v.editable = true;
 
                // jqconf.colModel[i] = v;
            });
 
            if(cjqconf.chich){
+               if(cjqconf.bz != 1)
                subConf.colModel = jqconf.colModel;
            }
 
@@ -458,6 +469,11 @@ define(
            var editopts = {},delopts={};
            //toolbar
            grido.jqGrid('navGrid',pager_id_jq,navopts,editopts,addopts,delopts,searchopts);
+
+           //可编辑
+           if(cjqconf.edit){
+               grido.jqGrid('inlineNav', pager_id_jq);
+           }
 
 
 

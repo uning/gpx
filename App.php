@@ -105,6 +105,9 @@ class App extends PL_Application{
             $stypes = $dconf[$txtname];
             foreach($dconf[$sheader] as $k=>$v){
                 $colHeader = array('name'=>$k,'label'=>$v,'width'=>70,'sorttype'=>'number');
+                if($k == 'content'){
+                   // $colHeader['width'] = 300;
+                }
                 if(isset($txtfields[$k]))
                     $colHeader['sorttype'] = 'text';
                 if($ops[$k]){

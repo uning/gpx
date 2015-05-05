@@ -3,12 +3,21 @@ $leftmenu = array(
     array('id'=>'chich','cntext'=>'持仓','pid'=>'root','nurl'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
     array('id'=>'chich_zuixin','cntext'=>'最新持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
 //    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'calcc','lastest'=>'lastest'))),
-   array('id'=>'chich_zuixin0','cntext'=>'最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'jgdc'))),
-    array('id'=>'chich_zuixin','cntext'=>'持仓汇总','pid'=>'chich','url'=>url(array('action'=>'view','header'=>'theader','coll'=>'calcc'))),
-    array('id'=>'chich_jisuan','cntext'=>'计算持仓','pid'=>'chich','url'=>url(array('action'=>'calcc','coll'=>'calcc','lastest'=>'lastest'))),
+   array('id'=>'chich_zuixin0','cntext'=>'最新持仓(jgdc含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'jgdc'))),
+    array('id'=>'chich_zuixin','cntext'=>'汇总多日','pid'=>'chich','url'=>url(array('action'=>'view','header'=>'theader','coll'=>'calcc'))),
+    array('id'=>'chich_zuixin','cntext'=>'股票多日','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'calcc'))),
+    array('id'=>'chich_jisuan','cntext'=>'计算','pid'=>'chich','url'=>url(array('action'=>'calcc','coll'=>'calcc','lastest'=>'lastest'))),
     array('id'=>'hg_huoqu','cntext'=>'获取股票价格','pid'=>'chich','url'=>url(array('action'=>'gethq','coll'=>'calcc','lastest'=>'lastest'))),
-    array('id'=>'zjgf_chich','cntext'=>'券商合并持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader','psidx'=>'date desc') )),
-    array('id'=>'zjgf_chichmx','cntext'=>'券商持仓明细','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header') )),
+
+    /*太慢，先zhu'shi注释掉*/
+    //array('id'=>'hg_huoqu','cntext'=>'获取股票价格xq','pid'=>'chich','url'=>url(array('action'=>'gethq_xq','coll'=>'calcc','lastest'=>'lastest'))),
+
+    /*没更新数据了，也不准*/
+    //array('id'=>'zjgf_chich','cntext'=>'券商合并持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader','psidx'=>'date desc') )),
+    //array('id'=>'zjgf_chichmx','cntext'=>'券商持仓明细','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header') )),
+
+
+
 
 
     array('id'=>'jgd','cntext'=>'交割单','pid'=>'root','nurl'=>url(array('action'=>'view','coll'=>'jgd'))),
@@ -157,7 +166,7 @@ $leftmenu = array(
                 <div freeze=true class="title-item selected" style=" " src="?action=view" >gpx</div>
             </div>
             <div class="right-pane-content" style=" ">
-                <iframe src="?action=view" frameborder="0"></iframe>
+                <iframe src="?action=view&coll=calcc&lastest=lastest" frameborder="0"></iframe>
             </div>
             <div class="item-close" style=" ">
                 <img src="asset/img/close.png" alt="" style="width: 100%;height: 100%;" />

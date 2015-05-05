@@ -161,15 +161,20 @@ if(!$psidx && !$groupfs){
     $jqconf['sortorder'] = $sord;
 }
 
-$bz = $this->getParam('bz');
-if($bz){//可编辑
-}
 $jqconf['subGrid'] = true;
 $param = $_REQUEST;
 $param['__nl'] = 1;
 $param['doq'] = '1';
 $param['multiSort'] = $multiSort;
 $jqconf['url'] = url($param);
+
+
+$bz = $this->getParam('bz');
+if(!$bz){//可编辑
+    echo "<a href='".$jqconf['url']."&bz=1'>子表是评论</a><br/>";
+}else{
+    $jqconf['bz'] = 1;
+}
 
 if($sheader == 'theader'){
     $subConf['colModel'] = App::getColModel($coll,'header');

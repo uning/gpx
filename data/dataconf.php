@@ -786,6 +786,16 @@ return array (
             '30' => '日期',
         )
     ),
+    'czbz'=>array(
+        'sfields'=>array(2=>'text','3'=>'text','chtime'=>'text'),//搜索的字段
+        'header'=>array(
+            'zqdm'=> '证券代码',
+            'zqmc' => '证券名称',
+            'time' => '日期',
+            'ts' => 'ts',
+            'content' => '内容',
+        )
+    ),
     'jgdc'=>array(
         'sfields'=>array(2=>'text','3'=>'text','chtime'=>'text'),//搜索的字段
         'groups' => 

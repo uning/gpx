@@ -36,7 +36,7 @@ if($prid){
     }
 }
 echo json_encode(array(
-    'rows'=>$rows
+   'rows'=>$rows
     ,'page'=> 1
     ,'records'=>$records
     ,'total'=>$records

@@ -57,11 +57,14 @@ class Crawler_Xueqiu{
                 echo "http get failed:".$url."\n"; 
             }
         }
-        $arr = json_decode($content,true);
-        if($arr['success'] == true ){
-            file_put_contents($cachefile,$content);
-            return $arr['chartlist'];
+        if($content){
+            $arr = json_decode($content,true);
+            if($arr['success'] == true ){
+                file_put_contents($cachefile,$content);
+                return $arr['chartlist'];
+            }
         }
+        
     }
 
 
@@ -71,6 +74,10 @@ class Crawler_Xueqiu{
         if($ret = $mc->findOne(array('_id'=>$id)))
             return $ret;
         $pre = App::zqdmPre($zqdm);
+        if(!$pre){
+            echo $error = "$zqdm no  marcket pre get\n";
+            return $ret;
+        }
         //
         $todate = date('Ymd');
         $kline = static::getDayK($pre.$zqdm,$date,$todate);

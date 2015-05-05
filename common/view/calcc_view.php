@@ -140,13 +140,15 @@ $param['doq'] = '1';
 $jqconf['url'] = url($param);
 $datepos = 0;
 
-$colModel = App::getColModel($coll,$sheader,$datepos,-1);
+$colModel = App::getColModel($coll,$sheader,$datepos,8);
 $subConf['loadonce'] = true;
-$subConf['me_edit'] = false;
 $jqconf['subGrid'] = true;
-$subConf['subGrid'] = true;
+
+$bz = $this->getParam('bz');
+
 if($sheader == 'theader'){
-    $subConf['colModel'] = App::getColModel($coll,'header',-1,-1);
+    if($bz!=1)
+        $subConf['colModel'] = App::getColModel($coll,'header',-1,8);
 }else{
     if($lastest){
         $jqconf['loadonce'] = true;
@@ -162,9 +164,20 @@ if($sheader == 'theader'){
         include __DIR__.'/part_refresh.php';
         
     }
-    $subConf['colModel'] = App::getColModel($coll,'jgdheader' ,-1,9);
+    if($bz != 1)
+        $subConf['colModel'] = App::getColModel($coll,'jgdheader' ,-1,8);
 }
-$subConf['urlp'] = url($param).'&prid=';
+if($bz != 1){
+    $subConf['urlp'] = url($param).'&prid=';
+    $subConf['me_edit'] = false;
+    $subConf['subGrid'] = true;
+}
+
+
+$jqconf['bz'] = $bz;
+if($bz != 1){
+    echo "<a href='".url($_REQUEST)."&bz=1'>子表是评论</a><br/>";
+}
 
 include  __DIR__.'/part_group.php';
 include  __DIR__.'/part_grid.php';
