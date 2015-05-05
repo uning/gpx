@@ -10,7 +10,8 @@ echo "<pre>\n";
 foreach($zqrs as $k=>$row){
     $pre = App::zqdmPre($k);
     if($pre){
-        $list .="$pre$k,";
+        if($row[6] != 0)
+            $list .="$pre$k,";
     }else{
         echo "[$k] not get pre [$pre] {$row[3]}\n";
     }
