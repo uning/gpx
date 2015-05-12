@@ -365,7 +365,10 @@ while($row = $c->getNext()){
 
     $syje = $presyje + $r9 + $fixed;
     $diff2 = abs(round($qse - $syje));
-    //echo "$fkk [{$row['3']}][$ywmc] qse[$qse]!=syje[$syje] = presyje[$presyje] or rrsyje[$rrsyje]  + r9[$r9] diff1[$diff1] diff2[$diff2] fixed[$fixed]\n";
+    /*
+    echo "$fkk [{$row['3']}][$ywmc] qse[$qse]!=syje[$syje] = presyje[$presyje] or rrsyje[$rrsyje]  + r9[$r9] diff1[$diff1] diff2[$diff2] fixed[$fixed]\n";
+    $is_exit = true;continue;
+     */
     if($diff1 > 1){
         if($diff2 > 1){
             if(($r9 == 0 && $row[8] == 0)||$ywmc == '指定交易'){
@@ -385,7 +388,6 @@ while($row = $c->getNext()){
 
 
     if($is_exit){
-        print_r($zqrs);
         echo  "\n  exit\n";
         exit();
     }
@@ -396,6 +398,10 @@ echo "清算额:[$qse] ==  [$syje] = [{$row[9]}]  [$rrsyje] [$presyje]\n";
 if(!$jgrq){
     $prejgrq = $jgrq = $datestr;
     echo "没有交割记录\n";return;
+}
+if($is_exit){
+    echo  "\n  exit\n";
+    exit();
 }
 //*
 saveDayN($jgrq,$mon,$totalr,$zqrs);

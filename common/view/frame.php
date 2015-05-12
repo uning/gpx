@@ -67,6 +67,7 @@ $leftmenu = array(
 
 <link rel="stylesheet" href="asset/js/lib/panListMenu/listMenu.css" />
 <link rel="icon" type="image/x-icon" href="asset/img/fav.ico">
+<link rel="apple-touch-icon" type="image/x-icon" href="asset/img/fav.ico">
 <style>
     body{
         font-family: 'Microsoft Yahei';

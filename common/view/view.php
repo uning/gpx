@@ -46,6 +46,7 @@ if($coll == 'zjgf'){
     
 }
 
+    $sort['_fnorder']=1;
 ///*
 $c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,true);
 
