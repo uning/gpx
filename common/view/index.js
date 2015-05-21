@@ -83,8 +83,11 @@ $(function(){
         $("#listMenu").listMenu("load",menudata);
     }
 
-    var tabUrlList = new Object();
+    var tabUrlList = {};
     var tabLength = 0;
+    var defurl = '?action=view&coll=calcc&lastest=lastest',deftitle='持仓>最新持仓';
+    addTab(deftitle,defurl);
+
     function addTab(title,url,fresh){
         if(tabLength>8){
             alert("请先尝试关闭一些页面，再打开新页面");
@@ -112,7 +115,7 @@ $(function(){
 
     }
     function selectTab(url,refresh){
-        var old = $(".right-pane-title .selected");//.removeClass("selected");
+        var old = $(".right-pane-title .selected");
         old.removeClass("selected");
         $(".right-pane-title").find("[src='"+url+"']").addClass("selected");
         $(".right-pane-content iframe").hide();

@@ -126,14 +126,16 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
         }
         //可以只存有改变的,为方便全部保存
         if($v['ldate'] == $jgrq || $zqnum != 0){
-            $v['date'] = $jgrq;
+
+            //存一个最新的,保持id不变，用zero,保持一致，好添加评论
+            $id  = $k.'_zero';
+            $v['date'] = 'lastest';
+            $mon->findAndModify(array('_id'=>$id),array('$set'=>$v));
+
             if($zqnum != 0 ){
-                $id = $v['_id'] = $k.'_'.$jgrq;
-                $mon->save($v);
-            }else{
-                $id = $v['_id'] = $k.'_zero';
+                $v['date'] = $jgrq;
+                $id = $k.'_'.$jgrq;
                 $mon->findAndModify(array('_id'=>$id),array('$set'=>$v));
-                //$mon->save($v);
             }
         }
     }

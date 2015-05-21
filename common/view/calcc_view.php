@@ -30,6 +30,7 @@ if($doq){
         static::processGridAjaxParams($sort,$cond,$limit,$skip,$filterstr ,$sidx);
 
 
+        /*
         if($lastest == 'lastest'){
             $c = $mon->findByIndex($coll,(object)$cond,1,0,array(),array('date'=>-1),true);
             $row = $c->getNext();
@@ -37,6 +38,7 @@ if($doq){
         }elseif($lastest){
             $cond['date'] = $lastest; 
         }
+        */
 
         //获取为0的
         if($include0 = static::getParam('include0')){
@@ -65,6 +67,9 @@ if($doq){
                 if(!$sort){
                     $sort = array('date'=>-1);
                 }
+            }else{
+                $cond[6]['$ne'] = 0;
+                $cond['date'] = $lastest; 
             }
         }
 

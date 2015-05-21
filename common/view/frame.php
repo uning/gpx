@@ -164,10 +164,8 @@ $leftmenu = array(
         </div>
         <div class="right-pane" style=" ">
             <div class="right-pane-title" style=" ">
-                <div freeze=true class="title-item selected" style=" " src="?action=view" >gpx</div>
             </div>
             <div class="right-pane-content" style=" ">
-                <iframe src="?action=view&coll=calcc&lastest=lastest" frameborder="0"></iframe>
             </div>
             <div class="item-close" style=" ">
                 <img src="asset/img/close.png" alt="" style="width: 100%;height: 100%;" />
