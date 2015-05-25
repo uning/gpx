@@ -1,5 +1,4 @@
-$(function(){
-
+(function($,undefined){
     var menudata = leftmenu || [];
     var id2menudata = {};
     menudata.forEach(function(v){
@@ -148,4 +147,4 @@ $(function(){
         }
     }
     pageInit();
-});
+})(jQuery);

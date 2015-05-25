@@ -40,19 +40,6 @@ if($doq){
         }
         */
 
-        //获取为0的
-        if($include0 = static::getParam('include0')){
-            //$cond[6]['$ne'] = 0;
-            $ocond = $cond;
-            $cond = array();
-            $cond['$or'][] = array(6=>0);
-            $cond['$or'][]= $ocond;
-
-            $ocond = $cond;
-            $cond = array();
-            $cond['$and'][] = array(8=>array('$ne'=>0)); //去掉申购的，认为申购未中签的,清算额为0
-            $cond['$and'][]= $ocond;
-        }
 
 
         if($sheader == 'theader'){
@@ -70,6 +57,20 @@ if($doq){
             }else{
                 $cond[6]['$ne'] = 0;
                 $cond['date'] = $lastest; 
+                //获取为0的
+                if($include0 = static::getParam('include0')){
+                    //$cond[6]['$ne'] = 0;
+                    $ocond = $cond;
+                    $cond = array();
+                    $cond['$or'][] = (object)array(6=>0);
+                    $cond['$or'][]= $ocond;
+                
+
+                    $ocond = $cond;
+                    $cond = array();
+                    $cond['$and'][] = (object)array(8=>array('$ne'=>0)); //去掉申购的，认为申购未中签的,清算额为0
+                    $cond['$and'][]= $ocond;
+                }
             }
         }
 

@@ -110,6 +110,7 @@ class App extends PL_Application{
                 }
                 if(isset($txtfields[$k]))
                     $colHeader['sorttype'] = 'text';
+
                 if($ops[$k]){
                     $colHeader['summaryType'] = $ops[$k];
                     $colHeader['summaryTpl'] = '{0}';
@@ -158,6 +159,11 @@ class App extends PL_Application{
     //////////////////////////////////////////////////////////////////////
     static function dateDifference($date_1 , $date_2 , $differenceFormat = '%a' )
     {
+        if($date_1 == 'lastest')
+            $date_1 = date('Ymd');
+        if($date_2 == 'lastest')
+            $date_2 = date('Ymd');
+
         $datetime1 = date_create($date_1);
         $datetime2 = date_create($date_2);
         $interval = date_diff($datetime1, $datetime2);

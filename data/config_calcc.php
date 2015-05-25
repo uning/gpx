@@ -183,6 +183,12 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
 
     $tr['_info'] = $info;
     $mon->findAndModify(array('_id'=>$pretid),array('$set'=>$tr));
+
+    $tr['date'] = 'lastest';
+    unset($tr['_id']);
+    $mon->findAndModify(array('_id'=>'total_lastest'),array('$set'=>$tr));
+    $tr['date'] = $jgrq;
+
     echo "\n\n======\n$info";
 }
 

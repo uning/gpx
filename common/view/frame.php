@@ -2,7 +2,7 @@
 $leftmenu = array(
     array('id'=>'chich','cntext'=>'持仓','pid'=>'root','nurl'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
     array('id'=>'chich_zuixin','cntext'=>'最新持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'calcc','lastest'=>'lastest'))),
-//    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'calcc','lastest'=>'lastest'))),
+    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(calcc含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'calcc','lastest'=>'lastest'))),
    array('id'=>'chich_zuixin0','cntext'=>'最新持仓(jgdc含0)','pid'=>'chich','url'=>url(array('action'=>'view','include0'=>1,'coll'=>'jgdc'))),
     array('id'=>'chich_zuixin','cntext'=>'汇总多日','pid'=>'chich','url'=>url(array('action'=>'view','header'=>'theader','coll'=>'calcc'))),
     array('id'=>'chich_zuixin','cntext'=>'股票多日','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'calcc'))),

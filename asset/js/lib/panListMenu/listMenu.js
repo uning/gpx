@@ -129,7 +129,7 @@
 						opts.onClickItem.call(this,itemdata);
 					}
 				});
-				groupContent.hide(); //by tingkun
+				//groupContent.hide(); //by tingkun
 				groupContent.data("for-item",groupTitle);
 				return groupContent;
 			};
