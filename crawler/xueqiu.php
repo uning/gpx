@@ -6,8 +6,14 @@
 
 class Crawler_Xueqiu{
 
-    //获取登陆后的雪球cookie
-    const COOKIES='Cookie: xq_a_token=ded657d12d5f42cbf06142b4b611dca7792f6d0f; xqat=ded657d12d5f42cbf06142b4b611dca7792f6d0f; xq_r_token=6b2413cac9c989c53db3788db47eeba3c63e7e28; xq_token_expire=Fri%20May%2029%202015%2009%3A12%3A33%20GMT%2B0800%20(CST); xq_is_login=1; bid=c12aeb0acdf4693cc89242dcd4b8a194_i99704rx; snbim_minify=false; __utma=1.1280967048.1430527005.1430702000.1430788969.6; __utmb=1.36.9.1430795490450; __utmc=1; __utmz=1.1430527005.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Hm_lvt_1db88642e346389874251b5a1eded6e3=1428840796,1429577930,1430451578,1430701852; Hm_lpvt_1db88642e346389874251b5a1eded6e3=1430797478';
+    static $cookies;
+    static function  initCookies(){
+        if($cookies)
+            return;
+        $cfile = __DIR__.'/xueqiu.cookies';
+        self::$cookies = file_get_contents($cfile);
+
+    }
 
     /**
      *
@@ -19,6 +25,7 @@ class Crawler_Xueqiu{
      *
      */
     static function getDayK($symbol,$from_date,$to_date = '',$cacheout = -1){
+        static::initCookies();
         //注意begin，end 是毫秒单位的
         //xueqiu.com/stock/forchartk/stocklist.json?symbol=SZ002465&period=1day&type=before&begin=1427018383612&end=1427098383612
         $ps = strtotime($from_date).'000';
@@ -43,7 +50,7 @@ class Crawler_Xueqiu{
                 (
                     'method' => 'GET',
                     'header'=>"Cache-Control: max-age=0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4"
-                    ."\r\n".self::COOKIES."\r\n",
+                    ."\r\nCookie:".self::$cookies."\r\n",
                     'user_agent'=>'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36',
                 )
             );
