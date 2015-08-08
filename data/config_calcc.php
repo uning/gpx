@@ -8,12 +8,7 @@ $zh2gu = array(
 );
 
 //申购代码到正式代码转换
-//
-$sgdm2zqdm = array(
-    '780198'=>'601198',//东兴证券
-    '730958'=>'600958',
-    '730959'=>'600959',
-);
+$sgdm2zqdm = require 'config_sgdm2zqdm.php'; 
 
 $sg2gu = array();
 $prejgrq = '';
@@ -70,7 +65,7 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
         if($zqnum != 0 && $v['pdate'] != $jgrq ){
             $info = $infos[$k];
             if(!$info && $failedinfos[$k] !=1){
-                $info=Crawler_Xueqiu::getGupiaoDay($k,$jgrq);
+                $info=Crawler_Xueqiu::getGupiaoDay($k,$jgrq); //not coment after all callc
                 if(!$info){
                     echo "==getInfo failed $k ".$v[3]."\n";
                     //不去尝试获取已经失败的
@@ -237,10 +232,23 @@ while($row = $c->getNext()){
             $zqdm = $sgdm2zqdm[$zqdm];
         }else{
             $zqdm[0] = '6';
-            $zqdm[1] = '0';
-            $zqdm[2] = '3';
-            if($zqdm[2] == '0'){
+            $i1 = $zqdm[1];
+            $i2 = $zqdm[2];
+            if($i1 == '3'  && $i2 == '2'){//32
+                $zqdm[1] = '0';
+                $zqdm[2] = '3';
+            }elseif( ($i1 == '3' || $i1 == '4')  && $i2 == '0'){//30 40
+                $zqdm[1] = '0';
                 $zqdm[2] = '0';
+            }elseif($i1 >= 8  && $i2 == '0'){//80 90
+                $zqdm[1] = '0';
+                $zqdm[2] = '1';
+            }elseif($i1 == '3'  && $i2 == '4'){//34
+                $zqdm[1] = '0';
+                $zqdm[2] = '3';
+            }elseif($i1 == '9'  && $i2 == '9'){//34
+            }else{
+                echo "证券代码 $zqdm not_convert exit $ywmc\n";//exit(0);
             }
         }
 
@@ -301,8 +309,13 @@ while($row = $c->getNext()){
     case '担保品卖出':
     case '融券购回':
     case '卖券还款':
+        $zqr[6] -= $row[5];   //剩余数量
+        break;
     case '申购还款':
         $zqr[6] -= $row[5];   //剩余数量
+        if($row[5] == 0){
+            $zqr[6] = 0; //处理申购取消
+        }
         break;
     case '债券转股回售转出':
         //*
@@ -345,10 +358,28 @@ while($row = $c->getNext()){
     case '偿还融券费用':
         $totalr['rongquanlx'] += $row[8];
         break;
+
+    case '证券分拆记减/基':
+    case '开放基金合并减股':
+    case '开放基金拆分减股':
+         $zqr[6] -= $row[5];   //剩余数量
+         break;
+    case '证券分拆记增/基':
+    case '开放基金拆分增股':
+        $zqr[6] += $row[5];
+        break;
+    case '基金申购拨出':
+        $zqr[6] += $row[5];
+        break;
+    case '开放基金赎回':
+        $zqr[6] -= $row[5];
+        break;
     default:
+        echo  "$ywmc not case_process\n";
     }
 
     if($zqdm){//有证券代码的
+        $zqr['lastop'] = $ywmc;
         $zqrs[$zqdm] = $zqr;
     }
 
