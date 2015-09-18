@@ -300,6 +300,8 @@ while($row = $c->getNext()){
     case '融资买入':
     case '担保品买入':
     case '红股入账':
+    case '股份转入':
+    case '担保物转入':
     case '转股入帐':
     case '新股申购'://不计算申购新股，盈亏可用不准
         $zqr[6] += $row[5];   //剩余数量
@@ -308,6 +310,8 @@ while($row = $c->getNext()){
     case '证券卖出':
     case '担保品卖出':
     case '融券购回':
+    case '担保物转出':
+    case '股份转出':
     case '卖券还款':
         $zqr[6] -= $row[5];   //剩余数量
         break;
@@ -366,6 +370,7 @@ while($row = $c->getNext()){
          break;
     case '证券分拆记增/基':
     case '开放基金拆分增股':
+    case '开放基金合并增股':
         $zqr[6] += $row[5];
         break;
     case '基金申购拨出':
