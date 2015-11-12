@@ -99,6 +99,7 @@ if($doq){
 
         if($row['istotal'] == 0 || isset($cond['istotal'])){
             $row['_forsum'] = '_forsum';
+            $row['date'] = $row['caldate'];//使用最后ldate 表示ccdate
             $rows[] = $row;
         }else{//userData
             $userData = $row;

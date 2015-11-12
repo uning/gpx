@@ -1,6 +1,6 @@
 <?php
 class IndexServer  extends PL_Server_Page{
-	
+
 	public function __construct(){
 		$this->viewRoot = ROOT.'/common/view';
         //require(__DIR__.'/common/view/table.php');
@@ -24,7 +24,7 @@ class IndexServer  extends PL_Server_Page{
         require $this->viewRoot."/layout.php";
 	}
 
-    
+
     /**
      * 处理jqGrid请求数据参数的函数
      * sidx -- 排序字段
@@ -40,7 +40,7 @@ class IndexServer  extends PL_Server_Page{
         );
 
         $multiSort = static::getParam('multiSort',true);
-        $psidx = static::getParam('psidx');//this param is overwrite by get data,but initGrid not suupport multiSort 
+        $psidx = static::getParam('psidx');//this param is overwrite by get data,but initGrid not suupport multiSort
         $sord = static::getParam('sord','desc');
         $sidx = static::getParam('sidx');
         if(!$sidx && $sidx !== '0'){
@@ -57,7 +57,7 @@ class IndexServer  extends PL_Server_Page{
                 $sort[$v] = 1;
             }else
                 $sort[$v] = -1;
-        } 
+        }
 
 
         $condtpl =static::getParam('condtpl');

@@ -124,6 +124,7 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
 
             //存一个最新的,保持id不变，用zero,保持一致，好添加评论
             $id  = $k.'_zero';
+            $v['caldate'] = $jgrq;
             $v['date'] = 'lastest';
             $mon->findAndModify(array('_id'=>$id),array('$set'=>$v));
 

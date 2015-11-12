@@ -103,6 +103,3 @@ class Crawler_Xueqiu{
         return $ret;
     }
 }
-
-
-
