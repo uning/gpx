@@ -59,7 +59,6 @@ require.config({
                 'asset/js/lib/Log/jsDump-1.0.0',
             ],
         }
-        
     },
     packages: [
 

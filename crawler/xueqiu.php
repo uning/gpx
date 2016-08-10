@@ -33,7 +33,7 @@ class Crawler_Xueqiu{
             $to_date = $from_date;
         }
         $pe = strtotime($to_date).'999';
-        $url = "http://xueqiu.com/stock/forchartk/stocklist.json?symbol=$symbol&period=1day&type=before&begin=$ps&end=$pe"; 
+        $url = "https://xueqiu.com/stock/forchartk/stocklist.json?symbol=$symbol&period=1day&type=before&begin=$ps&end=$pe";
         $cachefile = CACHE_DIR.md5($url);
         if($cacheout != 0 ){
             if(file_exists($cachefile)){
@@ -61,7 +61,7 @@ class Crawler_Xueqiu{
                 //echo $content;
                 fclose($fp);
             }else{
-                echo "http get failed:".$url."\n"; 
+                echo "http get failed:".$url."\n";
             }
         }
         if($content){
@@ -71,7 +71,7 @@ class Crawler_Xueqiu{
                 return $arr['chartlist'];
             }
         }
-        
+
     }
 
 

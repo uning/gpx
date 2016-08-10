@@ -8,7 +8,7 @@ $zh2gu = array(
 );
 
 //申购代码到正式代码转换
-$sgdm2zqdm = require 'config_sgdm2zqdm.php'; 
+$sgdm2zqdm = require 'config_sgdm2zqdm.php';
 
 $sg2gu = array();
 $prejgrq = '';
@@ -41,7 +41,7 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     // */
     foreach($zqrs as $k=>$v){
         $ids[] = $k."_$jgrq";
-    } 
+    }
     $curcc = $mon->findByIndex('dayklineinfo',array('_id'=>array('$in'=>$ids)),10000,0,array());
     foreach($curcc as $k=>$v){
         if($v['istotal'] == 1){
@@ -65,12 +65,14 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
         if($zqnum != 0 && $v['pdate'] != $jgrq ){
             $info = $infos[$k];
             if(!$info && $failedinfos[$k] !=1){
+                /*
                 $info=Crawler_Xueqiu::getGupiaoDay($k,$jgrq); //not coment after all callc
                 if(!$info){
                     echo "==getInfo failed $k ".$v[3]."\n";
                     //不去尝试获取已经失败的
                     $failedinfos[$k] = 1;
                 }
+                 */
             }
             if($info){
                 $v[4] = $info['close'];
@@ -117,7 +119,7 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
         //$v[8] = round($v[8],3);
 
         if($v['cdate']){
-            $v['chtime'] = App::dateDifference($v['cdate'],$v['ldate']); 
+            $v['chtime'] = App::dateDifference($v['cdate'],$v['ldate']);
         }
         //可以只存有改变的,为方便全部保存
         if($v['ldate'] == $jgrq || $zqnum != 0){
@@ -191,7 +193,7 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
 
 
 $coll = 'jgd';
-$mon = new PL_Db_Mongo(DbConfig::getMongodb('jgd')); 
+$mon = new PL_Db_Mongo(DbConfig::getMongodb('jgd'));
 $sort = array('0'=>1,'_fnorder'=>1);
 $limit = 1000000;
 $skip = 0;
@@ -209,7 +211,7 @@ $c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,tr
 //
 //
 //按日期正序
-$mon = new PL_Db_Mongo(DbConfig::getMongodb('calcc')); 
+$mon = new PL_Db_Mongo(DbConfig::getMongodb('calcc'));
 while($row = $c->getNext()){
     $ywmc = $row[1];//业务名称
     $zqdm = $row[2];//证券代码
@@ -303,6 +305,7 @@ while($row = $c->getNext()){
     case '红股入账':
     case '股份转入':
     case '担保物转入':
+    case '新股入帐':
     case '转股入帐':
     case '新股申购'://不计算申购新股，盈亏可用不准
         $zqr[6] += $row[5];   //剩余数量
@@ -337,7 +340,7 @@ while($row = $c->getNext()){
         $gpr['ljmr'] -= $cb;//累计买入多少钱
         $gpr['ldate'] = $jgrq;//表明今天变化过
         $gpr[2] = $gp;
-        $gpr[8] += $cb;//成本到股票记录去了 
+        $gpr[8] += $cb;//成本到股票记录去了
         $zqr[8] -= $cb;
         //*/
         $zqr[6] -= $row[5];   //剩余数量

@@ -1,10 +1,10 @@
 <?php
 return array (
-    'jgd' => 
+    'jgd' =>
     array (
         'name' => '交割单',
         'filename' => 'jgd.csv',
-        'idfs' => 
+        'idfs' =>
         array (
             0 => 0,
             1 => 2,
@@ -20,7 +20,7 @@ return array (
             11 => 13,
             12 => 16,
         ),
-        'groups' => 
+        'groups' =>
         array (
             0 => '交割日期',
             17 => '股东代码',
@@ -42,7 +42,7 @@ return array (
             13 => '结算费',
             14 => '附加费',
         ),
-        'header' => 
+        'header' =>
         array (
             0 => '交割日期',
             1 => '业务名称',
@@ -64,10 +64,10 @@ return array (
             17 => '股东代码',
             18 => '资金帐号',
         ),
-        'colModel' => 
+        'colModel' =>
         array(
             //'_fnorder'=>array('name' => '_fnorder','label'=>'fn'),
-            0 => 
+            0 =>
             array (
                 'name' => '0',
                 'label' => '交割日期',
@@ -78,7 +78,7 @@ return array (
                 'summaryType' => 'count',
                 'sorttype' => 'date',
             ),
-            1 => 
+            1 =>
             array (
                 'name' => '1',
                 'label' => '业务名称',
@@ -88,7 +88,7 @@ return array (
                 'sorttype' => 'text',
             ),
 
-            2 => 
+            2 =>
             array (
                 'name' => '2',
                 'label' => '证券代码',
@@ -97,7 +97,7 @@ return array (
                 'frozen' => true,
                 'sorttype' => 'text',
             ),
-            3 => 
+            3 =>
             array (
                 'name' => '3',
                 'label' => '证券名称',
@@ -106,7 +106,7 @@ return array (
                 'frozen' => true,
                 'sorttype' => 'text',
             ),
-            4 => 
+            4 =>
             array (
                 'name' => '4',
                 'label' => '成交价格',
@@ -114,7 +114,7 @@ return array (
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            5 => 
+            5 =>
             array (
                 'name' => '5',
                 'label' => '成交数量',
@@ -123,14 +123,14 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            6 => 
+            6 =>
             array (
                 'name' => '6',
                 'label' => '剩余数量',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            7 => 
+            7 =>
             array (
                 'name' => '7',
                 'label' => '成交金额',
@@ -139,7 +139,7 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            8 => 
+            8 =>
             array (
                 'name' => '8',
                 'label' => '清算金额',
@@ -148,14 +148,14 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            9 => 
+            9 =>
             array (
                 'name' => '9',
                 'label' => '剩余金额',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            10 => 
+            10 =>
             array (
                 'name' => '10',
                 'label' => '佣金',
@@ -164,7 +164,7 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            11 => 
+            11 =>
             array (
                 'name' => '11',
                 'label' => '印花税',
@@ -173,7 +173,7 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            12 => 
+            12 =>
             array (
                 'name' => '12',
                 'label' => '过户费',
@@ -183,7 +183,7 @@ return array (
                 'sorttype' => 'number',
             ),
             /*
-            13 => 
+            13 =>
             array (
                 'name' => '13',
                 'label' => '结算费',
@@ -192,7 +192,7 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            14 => 
+            14 =>
             array (
                 'name' => '14',
                 'label' => '附加费',
@@ -201,14 +201,14 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            15 => 
+            15 =>
             array (
                 'name' => '15',
                 'label' => '币种',
                 'width' => 50,
                 'sortable' => false,
             ),
-            16 => 
+            16 =>
             array (
                 'name' => '16',
                 'label' => '成交编号',
@@ -216,21 +216,21 @@ return array (
                 'sorttype' => 'text',
             ),
             //*/
-            17 => 
+            17 =>
             array (
                 'name' => '17',
                 'label' => '股东代码',
                 'width' => 60,
                 'sortable' => false,
             ),
-            18 => 
+            18 =>
             array (
                 'name' => '18',
                 'label' => '资金帐号',
                 'width' => 60,
                 'sortable' => false,
             ),
-            'subg' => 
+            'subg' =>
             array (
                 'name' => 'subg',
                 'hidden' => true,
@@ -238,11 +238,11 @@ return array (
             ),
         ),
     ),
-    'lscj' => 
+    'lscj' =>
     array (
         'name' => '历史成交',
         'filename' => 'cjjl.csv',
-        'idfs' => 
+        'idfs' =>
         array (
             0 => 0,
             1 => 1,
@@ -254,7 +254,7 @@ return array (
             7 => 9,
             8 => 12,
         ),
-        'groups' => 
+        'groups' =>
         array (
             0 => '成交日期',
             2 => '证券代码',
@@ -273,7 +273,7 @@ return array (
             10 => '成交金额',
             15 => '剩余数量',
         ),
-        'header' => 
+        'header' =>
         array (
             0 => '成交日期',
             1 => '成交时间',
@@ -292,13 +292,13 @@ return array (
             14 => '备注',
             15 => '剩余数量',
         ),
-        'aheader' => 
+        'aheader' =>
         array (
             'comment' => '思路原因',
         ),
-        'colModel' => 
+        'colModel' =>
         array (
-            0 => 
+            0 =>
             array (
                 'name' => '0',
                 'label' => '成交日期',
@@ -306,7 +306,7 @@ return array (
                 'stype' => 'text',
                 'sorttype' => 'date',
             ),
-            1 => 
+            1 =>
             array (
                 'name' => '1',
                 'label' => '成交时间',
@@ -314,7 +314,7 @@ return array (
                 'width' => 75,
                 'sorttype' => 'text',
             ),
-            2 => 
+            2 =>
             array (
                 'name' => '2',
                 'label' => '证券代码',
@@ -322,7 +322,7 @@ return array (
                 'stype' => 'text',
                 'sorttype' => 'text',
             ),
-            3 => 
+            3 =>
             array (
                 'name' => '3',
                 'label' => '证券名称',
@@ -330,21 +330,21 @@ return array (
                 'stype' => 'text',
                 'sorttype' => 'text',
             ),
-            4 => 
+            4 =>
             array (
                 'name' => '4',
                 'label' => '买卖标志',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            5 => 
+            5 =>
             array (
                 'name' => '5',
                 'label' => '委托价格',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            6 => 
+            6 =>
             array (
                 'name' => '6',
                 'label' => '委托数量',
@@ -353,21 +353,21 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            7 => 
+            7 =>
             array (
                 'name' => '7',
                 'label' => '委托编号',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            8 => 
+            8 =>
             array (
                 'name' => '8',
                 'label' => '成交价格',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            9 => 
+            9 =>
             array (
                 'name' => '9',
                 'label' => '成交数量',
@@ -376,7 +376,7 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            10 => 
+            10 =>
             array (
                 'name' => '10',
                 'label' => '成交金额',
@@ -385,35 +385,35 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            11 => 
+            11 =>
             array (
                 'name' => '11',
                 'label' => '成交编号',
                 'width' => 50,
                 'sorttype' => 'number',
             ),
-            12 => 
+            12 =>
             array (
                 'name' => '12',
                 'label' => '股东编码',
                 'width' => 50,
                 'sorttype' => 'number',
             ),
-            13 => 
+            13 =>
             array (
                 'name' => '13',
                 'label' => '交易所',
                 'width' => 50,
                 'sorttype' => 'text',
             ),
-            14 => 
+            14 =>
             array (
                 'name' => '14',
                 'label' => '原备注',
                 'width' => 50,
                 'sorttype' => 'text',
             ),
-            15 => 
+            15 =>
             array (
                 'name' => '15',
                 'label' => '剩余数量',
@@ -421,11 +421,11 @@ return array (
             ),
         ),
     ),
-    'zjls' => 
+    'zjls' =>
     array (
         'name' => '资金流水',
         'filename' => 'zjls.csv',
-        'idfs' => 
+        'idfs' =>
         array (
             0 => 0,
             1 => 2,
@@ -435,7 +435,7 @@ return array (
             5 => 9,
             6 => 10,
         ),
-        'groups' => 
+        'groups' =>
         array (
             9 => '证券代码',
             0 => '成交日期',
@@ -451,7 +451,7 @@ return array (
             6 => '成交数量',
             7 => '剩余数量',
         ),
-        'header' => 
+        'header' =>
         array (
             0 => '成交日期',
             1 => '业务名称',
@@ -466,9 +466,9 @@ return array (
             10 => '股东代码',
             11 => '资金帐号',
         ),
-        'colModel' => 
+        'colModel' =>
         array (
-            0 => 
+            0 =>
             array (
                 'name' => '0',
                 'label' => '成交日期',
@@ -476,7 +476,7 @@ return array (
                 'stype' => 'text',
                 'sorttype' => 'date',
             ),
-            1 => 
+            1 =>
             array (
                 'name' => '1',
                 'label' => '业务名称',
@@ -484,7 +484,7 @@ return array (
                 'width' => 75,
                 'sorttype' => 'text',
             ),
-            2 => 
+            2 =>
             array (
                 'name' => '2',
                 'label' => '发生金额',
@@ -494,7 +494,7 @@ return array (
                 'stype' => 'text',
                 'sorttype' => 'number',
             ),
-            3 => 
+            3 =>
             array (
                 'name' => '3',
                 'label' => '剩余金额',
@@ -502,7 +502,7 @@ return array (
                 'stype' => 'number',
                 'sorttype' => 'number',
             ),
-            4 => 
+            4 =>
             array (
                 'name' => '4',
                 'label' => '证券名称',
@@ -510,14 +510,14 @@ return array (
                 'width' => 75,
                 'sorttype' => 'text',
             ),
-            5 => 
+            5 =>
             array (
                 'name' => '5',
                 'label' => '成交价格',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            6 => 
+            6 =>
             array (
                 'name' => '6',
                 'label' => '成交数量',
@@ -526,21 +526,21 @@ return array (
                 'summaryType' => 'sum',
                 'sorttype' => 'number',
             ),
-            7 => 
+            7 =>
             array (
                 'name' => '7',
                 'label' => '剩余数量',
                 'width' => 75,
                 'sorttype' => 'number',
             ),
-            8 => 
+            8 =>
             array (
                 'name' => '8',
                 'label' => '币种',
                 'width' => 50,
                 'sorttype' => 'text',
             ),
-            9 => 
+            9 =>
             array (
                 'name' => '9',
                 'label' => '证券代码',
@@ -548,7 +548,7 @@ return array (
                 'width' => 75,
                 'sorttype' => 'text',
             ),
-            10 => 
+            10 =>
             array (
                 'name' => '10',
                 'label' => '股东代码',
@@ -556,7 +556,7 @@ return array (
                 'width' => 50,
                 'sorttype' => 'text',
             ),
-            11 => 
+            11 =>
             array (
                 'name' => '11',
                 'label' => '资金账号',
@@ -653,7 +653,7 @@ return array (
     'calcc'=>array(
 
         'sfields'=>array(2=>'text','3'=>'text','chtime'=>'text'),//搜索的字段
-        'groups' => 
+        'groups' =>
         array (
             'date' => '日期',
             '_forsum' => '求和',
@@ -692,7 +692,7 @@ return array (
             //14 => '附加费',
         ),
         'theader'=>array(
-            //   'date'=>'日期',
+             'date'=>'日期',
             'zxsz' => '最新市值',
             'zc' => '资产总额',
             'kyye' => '可用余额',
@@ -798,7 +798,7 @@ return array (
     ),
     'jgdc'=>array(
         'sfields'=>array(2=>'text','3'=>'text','chtime'=>'text'),//搜索的字段
-        'groups' => 
+        'groups' =>
         array (
             'date' => '日期',
             '_forsum' => '求和',
@@ -823,7 +823,7 @@ return array (
             'zxsz' => '市值',
             '8'=>'清算额',
             '_forsum'=>'求和',
-            
+
             'ljmr' => '累计买入',
             'fdyk' => '浮动盈亏',
             'ykbl' => '盈亏比例(%)',

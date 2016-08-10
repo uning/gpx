@@ -7,7 +7,7 @@ $dconf = &App::getDataconf($coll);
 
 //返回表数据
 if($doq){
-    $mon = new PL_Db_Mongo(DbConfig::getMongodb($coll)); 
+    $mon = new PL_Db_Mongo(DbConfig::getMongodb($coll));
     $prid = static::getParam('prid');
     if($prid){//请求交割记录
         $parr= explode('_',$prid);
@@ -36,7 +36,7 @@ if($doq){
             $row = $c->getNext();
             $cond['date'] = $row['date'];
         }elseif($lastest){
-            $cond['date'] = $lastest; 
+            $cond['date'] = $lastest;
         }
         */
 
@@ -56,7 +56,7 @@ if($doq){
                 }
             }else{
                 $cond[6]['$ne'] = 0;
-                $cond['date'] = $lastest; 
+                $cond['date'] = $lastest;
                 //获取为0的
                 if($include0 = static::getParam('include0')){
                     //$cond[6]['$ne'] = 0;
@@ -64,7 +64,7 @@ if($doq){
                     $cond = array();
                     $cond['$or'][] = (object)array(6=>0);
                     $cond['$or'][]= $ocond;
-                
+
 
                     $ocond = $cond;
                     $cond = array();
@@ -95,11 +95,12 @@ if($doq){
         }
         //交割单处理
         if($ccdate)
-            $row['chtime'] = App::dateDifference($row[0],$ccdate); 
+            $row['chtime'] = App::dateDifference($row[0],$ccdate);
 
         if($row['istotal'] == 0 || isset($cond['istotal'])){
             $row['_forsum'] = '_forsum';
-            $row['date'] = $row['caldate'];//使用最后ldate 表示ccdate
+            if($row['caldate'])
+                $row['date'] = $row['caldate'];//使用最后ldate 表示ccdate
             $rows[] = $row;
         }else{//userData
             $userData = $row;
@@ -146,6 +147,9 @@ $param['__nl'] = 1;
 $param['doq'] = '1';
 $jqconf['url'] = url($param);
 $datepos = 0;
+if($sheader == 'theader'){
+    $datepos = -1;
+}
 
 $colModel = App::getColModel($coll,$sheader,$datepos,8);
 $subConf['loadonce'] = true;
@@ -161,7 +165,7 @@ if($sheader == 'theader'){
         $jqconf['loadonce'] = true;
         $jqconf['rowNum'] = 50000;//
         $jqconf['footerrow'] = true;
-        
+
         $colModel[] = array('name'=>'_forsum','label'=>'求和','width'=>20);
         $colModel[] = array('name'=>'ssjg','label'=>'实时价格','width'=>70,'sorttype'=>'number');
         $colModel[] = array('name'=>'sszf','label'=>'今日涨幅%','width'=>70,'sorttype'=>'number');
@@ -169,7 +173,7 @@ if($sheader == 'theader'){
        $colModel[] = array('name'=>'jryk','label'=>'今日盈亏','width'=>70,'sorttype'=>'number');
         $jqconf['sshqColModel'] = App::getColModel('sshq','header',-1,-1);
         include __DIR__.'/part_refresh.php';
-        
+
     }
     if($bz != 1)
         $subConf['colModel'] = App::getColModel($coll,'jgdheader' ,-1,8);

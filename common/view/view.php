@@ -11,7 +11,7 @@ $doq = $this->getParam('doq');
 $chich = $this->getParam('chich');
 
 
-$psidx = $this->getParam('psidx');//this param is overwrite by get data,but initGrid not suupport multiSort 
+$psidx = $this->getParam('psidx');//this param is overwrite by get data,but initGrid not suupport multiSort
 $sord = $this->getParam('sord','desc');
 $multiSort = $this->getParam('multiSort',true);
 $sheader = $this->getParam('header','header');
@@ -19,7 +19,7 @@ $sheader = $this->getParam('header','header');
 //返回表数据
 if($doq){
         static::processGridAjaxParams($sort,$cond,$limit,$skip,$filterstr ,$sidx);
-$mon = new PL_Db_Mongo(DbConfig::getMongodb($coll)); 
+$mon = new PL_Db_Mongo(DbConfig::getMongodb($coll));
 
 if($chich){
     $unidf = $this->getParam('unidf');
@@ -43,7 +43,7 @@ if($coll == 'zjgf'){
         $cond['istotal'] = 0;
         $cond['date'] = substr($prid,0,8);
     }
-    
+
 }
 
     $sort['_fnorder']=1;
@@ -78,7 +78,7 @@ while($row = $c->getNext()){
             $hrow[3] = '总计：';
             $hrow['subg'][$rowid] = $row;
         }elseif($aidx > 0){
-            
+
             $idx = $aidx - 1;
             $rows[$idx]['subg'][$rowid] = $row;
             foreach($cmodel as $k=>$v){
@@ -86,7 +86,7 @@ while($row = $c->getNext()){
                     $rows[$idx][$k] += $row[$k];
                 }
             }
-             
+
         }
     }else if($coll == 'zjgf' && $sheader == 'theader'){
         $rows[] = $row;
@@ -136,7 +136,7 @@ if($groupfs !== ''){
         $gv['groupOrder'][] = 'desc';
     }
     //$multiSort = $jqconf['multiSort'] = false;
-    $jqconf['rowNum'] = 50000;//
+    $jqconf['rowNum'] = 2000;//太多了浏览器处理不来
     $jqconf['loadonce'] = 'true';
     $jqconf['groupDataSorted'] = true;
 
