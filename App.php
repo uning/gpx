@@ -34,7 +34,7 @@ class App extends PL_Application{
                 return PL_Session::start();
 
             });
-        $app->mshare('session.storage',   
+        $app->mshare('session.storage',
             function () use($app){
                 //return new PL_Session_Redis();
                 return new PL_Session_File();
@@ -173,12 +173,36 @@ class App extends PL_Application{
 
 
     static $_zqdm2pre = array(
+           '110015'=>'sh',
+           '110018'=>'sh',
+           '110024'=>'sh',
            '112155'=>'sz',
+           '112133'=>'sz',
+           '112110'=>'sz',
            '113001'=>'sh',
-           '150182'=>'sz',
+           '113002'=>'sh',
            '122083'=>'sh',
-           '131810'=>'sz',
+           '122093'=>'sh',
+           '122143'=>'sh',
+           '122162'=>'sh',
+           '124656'=>'sh',
            '128002'=>'sz',
+/*
+           '150001'=>'sz',
+           '150143'=>'sz',
+           '150144'=>'sz',
+           '150172'=>'sz',
+           '150181'=>'sz',
+           '150182'=>'sz',
+           '150196'=>'sz',
+           '150203'=>'sz',
+           '150209'=>'sz',
+           '159902'=>'sz',
+           '160221'=>'sz',
+           '160629'=>'sz',
+           '161024'=>'sz',
+           '161826'=>'sz',
+*/
     );
     /**
      * 获取代码前缀
@@ -195,6 +219,8 @@ class App extends PL_Application{
                 return 'sz';
             else if($sub3 == '204')
                 return 'sh';
+            else if($sub3  >= 150 && $sub3 <= 161)
+                return 'sz';
 
             return self::$_zqdm2pre[$v];
         }

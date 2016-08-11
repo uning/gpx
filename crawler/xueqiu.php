@@ -89,14 +89,18 @@ class Crawler_Xueqiu{
 
     }
 
-    /*
+    /**
+ *
      *
      *
      */
     static function getGupiaoDay($zqdm,$date){
         $id = $zqdm."_$date";
         $mc = DbConfig::getMongodb('dayklineinfo');
-        if($ret = $mc->findOne(array('_id'=>$id)))
+        $cond['$or'][]=array('_id'=>$id);
+        $cond['$or'][]=array('zqdm'=>$zqdm);
+        $ret = $mc->findOne($cond);
+        if($ret && $ret['day'] > $date)//更新日k线数据已经有了,不再重新抓取
             return $ret;
         $pre = App::zqdmPre($zqdm);
         if(!$pre){
@@ -107,6 +111,7 @@ class Crawler_Xueqiu{
         $todate = date('Ymd');
         $kline = static::getDayK($pre.$zqdm,$date,$todate);
         $ret = array();
+        //返回的是第一条存在的k线信息,有可能日期不准
         if($kline){
             foreach($kline as $info){
                 $day = date('Ymd',strtotime($info['time']));
@@ -120,4 +125,26 @@ class Crawler_Xueqiu{
         }
         return $ret;
     }
+
+    /**
+     * 全部获取一遍后好计算
+     */
+    static public function getXueDayKSave(){
+        $zqrs = DbConfig::getParam('zqrs',PSPACE);
+
+        foreach($zqrs as $k=>$v){
+            $info = null;
+            $cDate = $v['cdate'];
+            if($cDate && $v[8] != 0)//去除新股申购
+                $info=Crawler_Xueqiu::getGupiaoDay($k,$cDate); //not coment after all callc
+            if(!$info){
+                echo "fail==getGupiaoDay $cDate $k ".$v[3]."\n";
+            }else{
+                echo "succ==getGupiaoDay $cDate $k ".$v[3]." close:{$info['close']}\n";
+}
+
+        }
+    }
+
+
 }

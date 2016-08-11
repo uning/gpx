@@ -314,7 +314,7 @@ define(
                rowNum: 50,
 
 
-               rowList: [50,80,50000],
+               rowList: [50,100,50000],
                toppager:true,//call after custom button add ? element id = grid_id + '_toppager'
                //toolbar:[true,'both'],//
 
