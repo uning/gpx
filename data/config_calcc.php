@@ -42,19 +42,18 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
     foreach($zqrs as $k=>$v){
         $ids[] = $k."_$jgrq";
     }
+
+    //获取开盘收盘价
     $curcc = $mon->findByIndex('dayklineinfo',array('_id'=>array('$in'=>$ids)),10000,0,array());
     foreach($curcc as $k=>$v){
-        if($v['istotal'] == 1){
-            $okyye = $v[2] + 0; //可用余额
-            $otzxsz = $v[3]; //市值
-        }
         $infos[$v['zqdm']] = $v;
     }
 
 
 
-    $tzxsz = 0 ;
-    $tfdyk = 0;
+
+    $tzxsz = 0 ;//总的最新市值
+    $tfdyk = 0; //浮动盈亏
     foreach($zqrs as $k=>$v){
         $v['istotal'] = 0;
         $zqnum = $v[6]; //证券数量
@@ -72,7 +71,7 @@ function saveDayN($jgrq,&$mon,&$totalr,&$zqrs,$checked = true){
                     //不去尝试获取已经失败的
                     $failedinfos[$k] = 1;
                 }
-                 */
+                 //*/
             }
             if($info){
                 $v[4] = $info['close'];
@@ -298,7 +297,6 @@ while($row = $c->getNext()){
         break;
 
     case '证券买入':
-    case '申购中签':
     case '融券回购':
     case '融资买入':
     case '担保品买入':
@@ -379,9 +377,46 @@ while($row = $c->getNext()){
         break;
     case '基金申购拨出':
         $zqr[6] += $row[5];
+        $zqr['ljmr'] -= $row[8];//累计买入多少钱
+        //申购其他基金,计入市值
+        if($row[4] == 0 && $row[8] < 0){
+            $zqr[6] = 1;
+            $zqr[4] -= $row[8]; //单价等于清算额
+            //方便算市值;
+
+        }
         break;
+    case '基金赎回拨入':
+        $zqr[6] += $row[5];
+        //申购其他基金,计入市值
+        if($row[4] == 0 && $row[8] > 0){
+            $zqr[4] -= $row[8]; //单价等于清算额
+            $zqr[6] = 1;
+            //认为基金保有量小于10%时,亏损完,后面改成不计算其盈亏
+            if($zqr[4] <= $zqr['ljmr']*0.1)
+                $zqr[6] = 0;
+            //方便算市值;
+        }
+        break;
+
     case '开放基金赎回':
         $zqr[6] -= $row[5];
+        break;
+    case '申购中签': //新股入账处理了,不用加数量
+        $zqr['ljmr'] -= $row[8];//累计买入多少钱
+        break;
+
+    case 'ETF 申购退款':
+    case '债券兑息':
+    case '利息归本':
+    case '指定交易':
+    case '红利入账':
+    case '融券借入':
+    case '转股零款':
+    case '配售缴款':
+    case '偿还融券负债':
+    case '债券兑息兑付扣税':
+    case '股息红利差异扣税':
         break;
     default:
         echo  "$ywmc not case_process\n";

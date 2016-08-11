@@ -27,6 +27,9 @@ $leftmenu = array(
     array('id'=>'jgd_cz','cntext'=>'s操作汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','chich'=>1,'unidf'=>1,'psidx'=>'0 desc,16 desc'))),
     array('id'=>'jgd_chich0','cntext'=>'s持仓(含0)','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','chich'=>1,'unidf'=>2,'psidx'=>'0 desc,16 desc'))),
     array('id'=>'jgd_yz','cntext'=>'银证记录','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','condtpl'=>'jgdyz'))),
+    array('id'=>'jgd_xgrz','cntext'=>'新股入账','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','condtpl'=>'jgdxgrz'))),
+    array('id'=>'jgd_sgzq','cntext'=>'申购中签','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','condtpl'=>'jgdsgzq'))),
+
     array('id'=>'jgd_gphz','cntext'=>'按股票汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'2'))),
     array('id'=>'jgd_gpmzhz','cntext'=>'按股票买卖汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'2,1'))),
     array('id'=>'jgd_rqhz','cntext'=>'按日期汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'0'))),
@@ -52,7 +55,7 @@ $leftmenu = array(
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title> gupiaox </title>
-		
+
 <script type="text/javascript">
 	var ctx = "";//url pre
 	var console = console||{};
@@ -85,7 +88,7 @@ $leftmenu = array(
         right: 0px;
         top: 0px;
         bottom: 0px;
-        left:202px; 
+        left:202px;
         border-left: 1px solid #85B5D9;
     }
     .left-pane-title{

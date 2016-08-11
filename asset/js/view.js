@@ -76,14 +76,14 @@ define(
                                window.open(url,zqdm);
                                console.log('sshq ondblClickRow: on ',rowid,iRow, iCol,url);//, colconf);
                            },
-                           
+
                        });
                    }
                    //sshgrid.remove();
 
 
                    $.each(data,function(k,v){
-                       
+
                        zqdm = v['zqdm'];
                        rowid = _zqdm2ids[zqdm];
                        if(rowid == undefined){
@@ -95,7 +95,7 @@ define(
                            return;
                        }
                        zqLastRefreshTimes[zqdm] =  v['31'];
-                       
+
                        qse = parseFloat(grido.getCell(rowid,idxqse));
                        zqsl = parseFloat(grido.getCell(rowid,idxzqsl));
                        var czxsz = parseFloat(grido.getCell(rowid,idxzxsz));
@@ -124,7 +124,7 @@ define(
                        setCell(rowid,'ssyk',ssyk,ssyk);
                        setCell(rowid,'jryk',jryk,jryk);//今日盈亏
                        setCell(rowid,'zxsz',zxsz);
-                      /* 
+                      /*
                        v.ssjg = roundf(dqjg);
                        v.sszf = roundf(sszf);
                        v.ssyk = roundf(ssyk);
@@ -173,7 +173,7 @@ define(
            var _opopt = ['bw','eq','ge','le'];
            var _searchopt = {sopt:['eq','ge','le']};
            var _txtsearchopt = {sopt:['bw']};
-          
+
            //search util funcs
            var _dataInitColldata = function(grid,collInd){
                return function(element){
@@ -293,7 +293,7 @@ define(
            //查询交割单可以评论
            if(csubConf && csubConf.subGrid){
                //console.log('before sub extend',subConf);
-               var newaa = $.extend(true,{},subConf);   
+               var newaa = $.extend(true,{},subConf);
                newaa.urlp = '?action=bz&__nl=1&coll=jgd&prid=';
                newaa.editurlp = '?action=bz&__nl=1&coll=jgd&prid=';
                subConf.subGridRowExpanded = subgridExpander(newaa);
@@ -301,8 +301,9 @@ define(
 
            $.extend(true,subConf,csubConf || {});
 
-           console.log('subConf',subConf);
-           console.log('csubConf',csubConf);
+           //console.log('subConf',subConf);
+           //console.log('csubConf',csubConf);
+           var twidth =  'auto';
 
            jqconf ={
                url:qurl,
@@ -320,7 +321,8 @@ define(
                pager: pager_id_jq,
                shrinkToFit: false,
                scroll:true,
-               width: '1200',
+               //width: '1200',
+               width: twidth,
                height: 'auto',
                datatype: 'json',
                multiSort: true,
@@ -370,7 +372,7 @@ define(
                    // select the row when the expand column is clicked
                    selectOnExpand : true
                },
-               subGridRowExpanded:subgridExpander(subConf), 
+               subGridRowExpanded:subgridExpander(subConf),
            };
            $.extend(true,jqconf,cjqconf || {});
            //默认设置
@@ -445,10 +447,10 @@ define(
                view:true,
                csv:true,//not support
                //search: false, // show search button on the toolbar
-               position: "left", 
+               position: "left",
                cloneToTop:true
            };
-           var addopts = 
+           var addopts =
                {
                closeAfterAdd: true,
                recreateForm: true,

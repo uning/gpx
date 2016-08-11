@@ -37,6 +37,8 @@ class IndexServer  extends PL_Server_Page{
     static function processGridAjaxParams(&$sort,&$cond,&$limit,&$skip,&$filterstr = null,&$sidx = null){
         $condtpls = array(
             'jgdyz'=>array('$or'=>array( array(1=>'银行转证券'),array(1=>'证券转银行')))
+            ,'jgdxgrz'=>array(1=>'新股入帐')
+            ,'jgdsgzq'=>array(1=>'申购中签')
         );
 
         $multiSort = static::getParam('multiSort',true);
