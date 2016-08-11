@@ -104,7 +104,7 @@ class Crawler_Xueqiu{
             return $ret;
         $pre = App::zqdmPre($zqdm);
         if(!$pre){
-            echo $error = "$zqdm no  marcket pre get\n";
+            echo "notpre $zqdm no  marcket pre get\n";
             return $ret;
         }
         //
