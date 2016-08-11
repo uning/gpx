@@ -2,19 +2,51 @@
 /**
  * 获取雪球k线数据
  *
+ * todo: 获取更多数据
+ *
  */
 
 class Crawler_Xueqiu{
 
     static $cookies;
     static function  initCookies(){
-        if($cookies)
+        if(self::$cookies)
             return;
         $cfile = __DIR__.'/xueqiu.cookies';
         self::$cookies = file_get_contents($cfile);
 
+
+
+
     }
 
+
+    static public function curlget($url){
+
+        $headers = array(//'Connection: keep-alive',
+            'Cache-Control: max-age=0',
+            'Upgrade-Insecure-Requests: 0',
+            'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language: zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4',
+            self::$cookies,
+            //'Cookie: Hm_lvt_17fe7dbfb7c6403f008d815a35234de4=1463109988; s=7c12uwuni3; xq_a_token=d9095b17f7088dbc564055fcae89165b97ba4b46; xqat=d9095b17f7088dbc564055fcae89165b97ba4b46; xq_r_token=03b0332c53fe99c68f015640ebdaf8eadf21ddae; xq_is_login=1; u=7437463599; xq_token_expire=Mon%20Sep%2005%202016%2009%3A36%3A36%20GMT%2B0800%20(CST); bid=c12aeb0acdf4693cc89242dcd4b8a194_irpnm60y; snbim_minify=true; __utma=1.50337940.1470879396.1470879396.1470884275.2; __utmc=1; __utmz=1.1470879396.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); Hm_lvt_1db88642e346389874251b5a1eded6e3=1468807162,1470275641,1470373131; Hm_lpvt_1db88642e346389874251b5a1eded6e3=14708'
+        );
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $data = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo "curl $url Error: " . curl_error($ch);
+        }
+        curl_close($ch);
+        return $data;
+
+    }
     /**
      *
      * 获取股票日K线信息，从雪球
@@ -45,24 +77,7 @@ class Crawler_Xueqiu{
             }
         }
         if(!$content){
-            $params = array(
-                'http' => array
-                (
-                    'method' => 'GET',
-                    'header'=>"Cache-Control: max-age=0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\r\nAccept-Language: zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4"
-                    ."\r\nCookie:".self::$cookies."\r\n",
-                    'user_agent'=>'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36',
-                )
-            );
-            $ctx = stream_context_create($params);
-            $fp = fopen($url, 'r', false, $ctx);
-            if($fp){
-                $content = stream_get_contents($fp);
-                //echo $content;
-                fclose($fp);
-            }else{
-                echo "http get failed:".$url."\n";
-            }
+            $content = self::curlget($url);
         }
         if($content){
             $arr = json_decode($content,true);
@@ -74,7 +89,10 @@ class Crawler_Xueqiu{
 
     }
 
-
+    /*
+     *
+     *
+     */
     static function getGupiaoDay($zqdm,$date){
         $id = $zqdm."_$date";
         $mc = DbConfig::getMongodb('dayklineinfo');
