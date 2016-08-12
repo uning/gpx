@@ -13,8 +13,8 @@ $leftmenu = array(
     //array('id'=>'hg_huoqu','cntext'=>'获取股票价格xq','pid'=>'chich','url'=>url(array('action'=>'gethq_xq','coll'=>'calcc','lastest'=>'lastest'))),
 
     /*没更新数据了，也不准*/
-    //array('id'=>'zjgf_chich','cntext'=>'券商合并持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader','psidx'=>'date desc') )),
-    //array('id'=>'zjgf_chichmx','cntext'=>'券商持仓明细','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header') )),
+    array('id'=>'zjgf_chich','cntext'=>'券商持仓','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'theader','psidx'=>'date desc') )),
+    array('id'=>'zjgf_chichmx','cntext'=>'券商持仓明细','pid'=>'chich','url'=>url(array('action'=>'view','coll'=>'zjgf','header'=>'header') )),
 
 
 
@@ -35,6 +35,7 @@ $leftmenu = array(
     array('id'=>'jgd_rqhz','cntext'=>'按日期汇总','pid'=>'jgd','url'=>url(array('action'=>'view','coll'=>'jgd','groups'=>'0'))),
 
 
+    /*
     array('id'=>'zjls','cntext'=>'资金流水','pid'=>'root','url'=>url(array('action'=>'view','coll'=>'zjls'))),
     array('id'=>'zjls_ll','cntext'=>'浏览','pid'=>'zjls','url'=>url(array('action'=>'view','coll'=>'zjls'))),
     array('id'=>'zjls_bz','cntext'=>'原因记录','pid'=>'zjls','url'=>url(array('action'=>'view','coll'=>'zjls','bz'=>1))),
@@ -42,11 +43,12 @@ $leftmenu = array(
     array('id'=>'lscj','cntext'=>'历史成交','pid'=>'root'),
     array('id'=>'lscj_bz','cntext'=>'原因记录','pid'=>'lscj','url'=>url(array('action'=>'view','coll'=>'lscj','bz'=>1))),
     array('id'=>'lscj_ll','cntext'=>'浏览','pid'=>'lscj','url'=>url(array('action'=>'view','coll'=>'lscj'))),
+     */
 
 
     //array('id'=>'import','cntext'=>'导入','pid'=>'root'),
     array('id'=>'import_jl','cntext'=>'导入','pid'=>'root','url'=>url(array('action'=>'import'))),
-    //array('id'=>'import_t','cntext'=>'汇总zjgf','pid'=>'import','url'=>url(array('action'=>'importt'))),
+    array('id'=>'import_t','cntext'=>'导入汇总zjgf','pid'=>'root','url'=>url(array('action'=>'import','coll'=>'zjgf'))),
 );
 
 ?>
