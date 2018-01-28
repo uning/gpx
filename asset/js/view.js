@@ -170,9 +170,9 @@ define(
 
        show:function(cjqconf,csubConf){
            // searchopt de
-           var _opopt = ['bw','eq','ge','le'];
+           var _opopt = ['bw','eq','ge','le','cn','nc'];
            var _searchopt = {sopt:['eq','ge','le']};
-           var _txtsearchopt = {sopt:['bw']};
+           var _txtsearchopt = {sopt:['bw','cn','nc']};
 
            //search util funcs
            var _dataInitColldata = function(grid,collInd){
@@ -355,6 +355,16 @@ define(
                    var go = $('#'+gid);
                    go.toggleSubGridRow(rowid);
                    //console.log('ondblClickRow: on bz',rowid,iRow, iCol);//, colconf);
+               },
+               
+               //日期显示
+               loadComplete:function(res){
+                  console.log('loadComplete',res.startdate,res.enddate);
+                  if(res.startdate)
+                  $('#startdate').val(res.startdate);
+                  if(res.enddate)
+                  $('#enddate').val(res.enddate);
+
                },
 
                //footerrow : true,

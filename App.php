@@ -26,7 +26,8 @@ class App extends PL_Application{
         parent::__construct();
         $app = $this;
         $app['mods'] = array(
-            'index'=> ROOT.'/IndexServer.php'
+            'index'=> ROOT.'/IndexServer.php',
+            'wucun'=>ROOT.'/WucunServer.php'
         );
         PL_Session::$randsid = true;
         $app->mshare('session',
@@ -44,10 +45,14 @@ class App extends PL_Application{
 
     //获取配置
     static function &getDataconf($coll = ''){
+        if(!static::$dataconf){
+            static::$dataconf = DbConfig::getParam('gridconfig','gupiaox');
+        }
         if($coll)
             return static::$dataconf[$coll];
         return static::$dataconf;
     }
+
 
 
 
@@ -85,6 +90,9 @@ class App extends PL_Application{
         ,$idPos = 0
     ){
         $dconf = &static::$dataconf[$coll];
+        if(!$dconf){
+            $dconf = DbConfig::getParam('gridconfig.'.$coll,'grid');
+        }
         $colMap = $dconf['colModel'];
         $colModel = array();
         $i  = 0;
@@ -95,16 +103,28 @@ class App extends PL_Application{
                 $i += 1;
             }
         }else{
+            $txtfields  = array_flip((array)$dconf['txtfields']);
             $txtname = ($sheader == 'header') ? 'txtfields':$sheader.'_txtfields';
-            if($dconf[$txtname])
+            if ($dconf[$txtname]) {
                 $txtfields  = array_flip($dconf[$txtname]);
+            }
             $txtname = ($sheader == 'header') ? 'sumops':$sheader.'_sumops';
-            $ops = $dconf[$txtname];
+            $ops = $dconf['sumops'];
+            if ($dconf[$txtname]) {
+                $ops = $dconf[$txtname];
+            }
 
+            $stypes = $dconf['sfields'];
             $txtname = ($sheader == 'header') ? 'sfields':$sheader.'_sfields';
-            $stypes = $dconf[$txtname];
+            if ($dconf[$txtname]) {
+                $stypes = $dconf[$txtname];
+            }
+            $width = 70;
+            $cwidth =ceil(700 /count($dconf[$sheader]));
+            if($cwidth > $width)
+               $width = $cwidth;
             foreach($dconf[$sheader] as $k=>$v){
-                $colHeader = array('name'=>$k,'label'=>$v,'width'=>70,'sorttype'=>'number');
+                $colHeader = array('name'=>$k,'label'=>$v,'width'=>$width,'sorttype'=>'number');
                 if($k == 'content'){
                    // $colHeader['width'] = 300;
                 }
@@ -114,12 +134,16 @@ class App extends PL_Application{
                 if($ops[$k]){
                     $colHeader['summaryType'] = $ops[$k];
                     $colHeader['summaryTpl'] = '{0}';
-                }
+               }
                 if($stypes[$k]){
                     $colHeader['stype'] = $stypes[$k];
                 }
 
                 static::checkAddCol($i,$colModel,$datePos,$bzPos,$idPos);
+                if($k[0] === '_'){
+                    $colHeader['width'] = 10;
+                }
+                //$colHeader['cwidth'] = $cwidth;
                 $colModel[] = $colHeader;
                 $i += 1;
             }
@@ -138,8 +162,10 @@ class App extends PL_Application{
      * 转化为数字
      */
     static function normalTodb(&$row,&$options){
-        foreach($options as $k=>$v){
-            $row[$k] += 0;
+        if ($options) {
+            foreach ($options as $k=>$v) {
+                $row[$k] += 0;
+            }
         }
     }
 
@@ -228,7 +254,7 @@ class DbConfig extends   PL_Config_Db
     const SPACE_PREFIX = 'idpre_';
 
 
-    static $paramsFromDb;
+    static $paramsFromDb = array();
     /**
      * 一个space 存一条记录
      */
@@ -239,11 +265,19 @@ class DbConfig extends   PL_Config_Db
             $cond = array('_id'=>self::SPACE_PREFIX.$space);
             $g = $mc->findOne($cond);
         }
-        if($name)
-            return $g[$name];
+        if ($name) {
+            $arr = explode('.',$name);
+            foreach ($arr as $n) {
+                if (!$g) {
+                    break;
+                }
+                $g = $g[$n];
+            }
+        }
         return $g;
-
     }
+
+
     static function saveParam($name,$value = '',$space = 'defaut' ){
         $cond = array('_id'=>self::SPACE_PREFIX.$space);
         $mc = static::getMongodb('progparams');
@@ -253,7 +287,7 @@ class DbConfig extends   PL_Config_Db
         $mc->findAndModify($cond,array('$set'=>$name),array(),array('upsert'=>true));
     }
 }
-App::$dataconf = require ROOT.'/data/dataconf.php';
+//App::$dataconf = require ROOT.'/data/dataconf.php';
 //init sub instance
 App::getInstance();
 

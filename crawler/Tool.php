@@ -11,7 +11,6 @@
  */
 
 class Crawler_Tool{
-
     static public function postImportHx(&$content,&$coll,&$error){
         $lines = explode("\n",$content);
         if($coll == 'zjgf')
@@ -203,5 +202,91 @@ class Crawler_Tool{
     }
 
 
+    /**导入五村表格 */
+    static public function ceImportShimoExcel(&$lines,&$coll = null,&$myerrorno = null){
+        $dataconf = DbConfig::getParam('gridconfig', 'grid');
+        $headerfind = false;
+        $i = 0 ;
+        $findi = 0;
+        foreach($lines as $ln => $l){
+            $row = explode("\t",$l);
+            $fnum = count($row);
+
+            $lastcell = &$row[$fnum-1];
+            $lastcell = trim($lastcell);
+
+            if($ln == 0){
+                foreach($dataconf as $c=>$collconf){
+                    $header = $collconf['header'];
+                    $headerinvalid = 0;
+                    ///允许一个不同，因为该死的头部两字节不好去除
+                    foreach($header as $k=>$v){
+                        if($v != $row[$k]){
+                            $error .=  "$fn $c header checknot  $k=>[$v] [{$row[$k]}] \n";
+                            $headerinvalid +=1;
+                            if($headerinvalid > 1)
+                                break;
+                        }
+                    }
+                    if($headerinvalid > 1){
+                        $error .= "$fn header notmatch $c \n";
+                        continue;
+                    }else{
+                        $headerfind = true;
+                        $error .= "$fn match $c \n";
+                        $rowcnt = count($header);
+                        $idfs = $collconf['idfs'];
+                        $coll = $c;
+                        $mc = DbConfig::getMongodb($coll);
+                        break;
+                    }
+                }
+                if(!$headerfind){
+                    $myerrorno = 'noheader';
+                    return $error;
+                }
+            }else{
+                //哪里来的日期
+                array_splice($row,$rowcnt);
+                foreach($header as $k=>$v){
+                    if($row[$k] == '日期')
+                    $row[$k] = '';
+                }
+                
+                if ($fnum < $rowcnt) {
+                  //  continue;
+                }
+                $vstr = trim( $row[1].$row[2]);
+                if(!$vstr ){
+                    echo "ignore $l\n<br/>";
+                    continue;
+                }
+                if($coll == 'wucunLs'){
+                    if($row[0]){
+                    $date = $row[0];
+                    $arr = explode('.',$date);
+                    $year = $arr[0];
+                    $month = $arr[0].'.'.$arr[1];
+                    }
+                    $row[0] = $date;
+                    $row['year'] = $year.'';
+                    $row['month'] = $month;
+                }
+                $id = $row['_id'] = $date.'.'.$i;
+                $cond =  array('_id'=>$id);
+                if($mc->findOne($cond)){//
+                    $findi += 1;
+                }else{
+                    $ni += 1;
+                }
+                $i += 1;
+                App::normalTodb($row,$collconf['numfields']);
+                $row['_fnorder'] = $i;
+                $mc->findAndModify($cond,array('$set'=>$row),array(),array('upsert'=>true));
+            }
+        }
+        $error .=  "\n $counterror improt [$ni] new records, [$findi] old records [$coll]\n";
+        return $error;
+    }
 
 }
