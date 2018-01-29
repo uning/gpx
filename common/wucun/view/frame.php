@@ -1,19 +1,20 @@
 <?php
-$gridconfig = DbConfig::getParam('gridconfig','grid');
+$gridconfig = DbConfig::getParam('gridconfig', 'grid');
 
 $lf = array();
-foreach ( $gridconfig as $k => $v){
- $lf[] = array('id'=>$k,'cntext'=>$v['name'],'pid'=>'root');
- $lf[] = array('id'=>$k.'_view','cntext'=>'查看','pid'=>$k,'url'=>url(array('action'=>'view','coll'=>$k)));
- $headers = $v['showheaders'];
- if ($headers) {
-     foreach ($headers as $kk=>$vv) {
-         $lf[] = array('id'=>$k.'_view_'.$kk,'cntext'=>'查看'.$vv,'pid'=>$k,'url'=>url(array('action'=>'view','header'=>$kk,'coll'=>$k)));
-     }
- }
+foreach ($gridconfig as $k => $v) {
+    $lf[] = array('id'=>$k,'cntext'=>$v['name'],'pid'=>'root');
+    $lf[] = array('id'=>$k.'_view','cntext'=>'查看','pid'=>$k,'url'=>url(array('action'=>'view','coll'=>$k)));
+    $headers = $v['showheaders'];
+    if ($headers) {
+        foreach ($headers as $kk=>$vv) {
+            $lf[] = array('id'=>$k.'_view_'.$kk,'cntext'=>'查看'.$vv,'pid'=>$k,'url'=>url(array('action'=>'view','header'=>$kk,'coll'=>$k)));
+        }
+    }
 
- $lf[] = array('id'=>$k.'_import','cntext'=>'导入','pid'=>$k,'url'=>url(array('action'=>'import','coll'=>$k)));
-
+    $lf[] = array('id'=>$k.'_import','cntext'=>'导入','pid'=>$k,'url'=>url(array('action'=>'import','coll'=>$k)));
+    $lf[] = array('id'=>$k.'_add','cntext'=>'添加行','pid'=>$k,'url'=>url(array('action'=>'add','coll'=>$k)));
+    $lf[] = array('id'=>$k.'_del','cntext'=>'标记删除','pid'=>$k,'url'=>url(array('action'=>'del','coll'=>$k)));
 }
 ?>
 <!doctype html>

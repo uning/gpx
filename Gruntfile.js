@@ -98,7 +98,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-bower-requirejs');
 
   // Default task.
-  //grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify']);
-  grunt.registerTask('default', ['bower']);
+   grunt.registerTask('default', ['concat', 'uglify']);
+  //grunt.registerTask('default', ['bower']);
 
 };

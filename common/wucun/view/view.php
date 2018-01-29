@@ -30,6 +30,8 @@ if($doq){
         $limit = 10000;
     }
 
+    $cond['_byone']['$ne'] = 'del';
+
     $c = $mon->findByIndex($coll,(object)$cond,$limit,$skip,array(),(object)$sort,true);
 
     $cmodel  = $dconf['colModel'];

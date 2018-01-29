@@ -5,9 +5,12 @@
         <link rel="icon" type="image/x-icon" href="asset/img/fav.ico">
         <link rel="apple-touch-icon" type="image/x-icon" href="asset/img/fav.ico">
         <title> gupiaox </title>
-        <?php if($this->headerView) require $this->headerView;$curlp = P_URLP;?>
-        <script src="bower_components/requirejs/require.js" ndata-main="main.js"></script> 
-        <script src="main.js"></script> 
+        <?php if($this->headerView) require $this->headerView;$curlp = P_URLP;
+        // require ROOT.'/mainheader.php';
+        ?>
+
+        <script src="bower_components/requirejs/require.js" ndata-main="main.js"></script>
+        <script src="main.js"></script>
 
         <style>
             .ui-pg-input {width: auto; padding: 0px; margin: 0px;   height: 18px !important;}

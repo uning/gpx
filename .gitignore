@@ -12,6 +12,8 @@ crawler/cache/*
 tags
 *.bak
 \.*
+yarn.lock
+yarn-error.log
 
 bower_*
 node_*
