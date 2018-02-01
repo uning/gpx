@@ -14,7 +14,7 @@ foreach ($gridconfig as $k => $v) {
 
     $lf[] = array('id'=>$k.'_import','cntext'=>'导入','pid'=>$k,'url'=>url(array('action'=>'import','coll'=>$k)));
     $lf[] = array('id'=>$k.'_add','cntext'=>'添加行','pid'=>$k,'url'=>url(array('action'=>'add','coll'=>$k)));
-    $lf[] = array('id'=>$k.'_del','cntext'=>'标记删除','pid'=>$k,'url'=>url(array('action'=>'del','coll'=>$k)));
+   // $lf[] = array('id'=>$k.'_del','cntext'=>'标记删除','pid'=>$k,'url'=>url(array('action'=>'del','coll'=>$k)));
 }
 ?>
 <!doctype html>

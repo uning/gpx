@@ -15,16 +15,20 @@ $sheader = $this->getParam('header','header');
 
 $startdate = $this->getParam('startdate');
 $enddate = $this->getParam('enddate');
+
+$datepos = $dconf['datepos'];
 //返回表数据
 if($doq){
     static::processGridAjaxParams($sort,$cond,$limit,$skip,$filterstr ,$sidx);
     $mon = new PL_Db_Mongo(DbConfig::getMongodb($coll));
     $sort['_fnorder']=1;
+
+   
     if($startdate){
-        $cond['0']['$gte'] = $startdate;
+        $cond[$datepos]['$gte'] = $startdate;
     }
     if($endate){
-        $cond['0']['$lte'] = $enddate;
+        $cond[$datepos]['$lte'] = $enddate;
     }
     if(in_array($sheader,array('group1header'))){
         $limit = 10000;
@@ -39,7 +43,7 @@ if($doq){
 
     if ($sheader == 'group1header') {
         while ($row = $c->getNext()) {
-            $day = $row[0];
+            $day = $row[$datepos];
             if($startdate  > $day || $startdate == ''){
                $startdate = $day;
             }
@@ -56,6 +60,13 @@ if($doq){
         }
     } else {
         while ($row = $c->getNext()) {
+            $day = $row[$datepos];
+            if($startdate  > $day || $startdate == ''){
+               $startdate = $day;
+            }
+            if($enddate <$day || $enddate == ''){
+               $enddate = $day;
+            }
             $rows[] = $row;
         }
     }

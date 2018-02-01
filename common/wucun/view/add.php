@@ -2,6 +2,7 @@
 
 $collconf = DbConfig::getParam("gridconfig.$coll",'grid');
 $collheader = $collconf['header'];
+$datepos = $collconf['datepos'];
 $row = $this->getParam('row',array());
 if ($row) {
     $date = $row[0];
@@ -16,7 +17,7 @@ if ($row) {
         $error = "项目和涉及金额不能为空";
     }
 } else {
-    $row[0] = date('Y.m.d');
+    $row[$datepos] = date('Y.m.d');
     $row[4] = '李春龙';
     $row[5] = 1;
 
